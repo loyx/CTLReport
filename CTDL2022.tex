@@ -1,25 +1,27 @@
-\documentclass[12pt]{book}
+\documentclass[12pt, oneside]{book}
 \usepackage[width=4.375in, height=7.0in, top=1.0in, papersize={5.5in,8.5in}]{geometry}
-\usepackage[pdftex]{graphicx}
+\usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsfonts}
 \usepackage{tipa}
-%\usepackage{txfonts}
 \usepackage{textcomp}
-%\usepackage{amsthm}
-%\usepackage{array}
-%\usepackage{xy}
 \usepackage{fancyhdr}
-% \usepackage{ctex}
+\usepackage{newtxtext,newtxmath}
+\usepackage{xspace}
+\usepackage{longtable}
+
+
+% \usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 
 \pagestyle{fancy}
 \renewcommand{\chaptermark}[1]{\markboth{#1}{}}
 \renewcommand{\sectionmark}[1]{\markright{\thesection\ #1}}
 \fancyhf{}
-\fancyhead[LE,RO]{\bfseries\thepage}
+\fancyhead[L,RO]{\bfseries\thepage}
 \fancyhead[LO]{\bfseries\rightmark}
-\fancyhead[RE]{\bfseries\leftmark}
+\fancyhead[R]{\bfseries\leftmark}
 \renewcommand{\headrulewidth}{0.5pt}
 \renewcommand{\footrulewidth}{0pt}
 \addtolength{\headheight}{14pt}
@@ -30,9 +32,44 @@
 \renewcommand{\headrulewidth}{0pt}
 }
 
-% --------------------------------- self cmd --------------------------------- %
+% ---------------------------------------------------------------------------- %
+%                                   settings                                   %
+% ---------------------------------------------------------------------------- %
+
+% ---------------------------------------------------------------------------- %
+%                                   self cmd                                   %
+% ---------------------------------------------------------------------------- %
+
+% ---------------------------- grammar enviromnent --------------------------- %
+\newenvironment{grammar}{
+    \begin{small}
+    \begin{center}
+    \begin{longtable}{rcl}
+}{
+    \end{longtable}
+    \end{center}
+    \end{small}
+}
+% ----------------------------- grammar statement ---------------------------- %
 \newcommand{\bs}{\boldsymbol}
-\newcommand{\mb}{\mathbf}
+\newcommand{\mt}{\texttt}
+
+\newcommand{\baseStm}[3]{\raisebox{\ht\strutbox}{\hypertarget{grammer:#1}{}}$#1$&$#2$&$#3$\\ }
+\newcommand{\stm}[2]{\baseStm{#1}{\to}{#2}}
+\newcommand{\emptyStm}{\\}
+\newcommand{\orStm}[1]{&&$\mspace{9mu}\OR #1$ \\}
+\newcommand{\stt}[1]{\texttt{\textbf{'#1'}}\gsp}
+\newcommand{\ter}[1]{\hyperref[#1]{\mathbf{#1}}\gsp}
+\newcommand{\nter}[1]{\hyperlink{grammer:#1}{#1}\gsp}
+\newcommand{\gsp}{\mspace{10mu} }
+\newcommand{\opt}[1]{ [ \mspace{2mu} #1 \mspace{-8mu} ] }
+\newcommand{\rep}[1]{\leftBrace \mspace{2mu} #1 \mspace{-8mu}\rightBrace}
+\newcommand{\gup}[1]{ ( \mspace{2mu} #1 \mspace{-8mu} )}
+
+\newcommand{\leftBrace}{\{}
+\newcommand{\rightBrace}{\}}
+\newcommand{\OR}{\mspace{-9mu} | \mspace{2mu}}
+\newcommand{\squote}{' \mspace{10mu}}
 
 % --------------------------------- self cmd --------------------------------- %
 
@@ -42,17 +79,10 @@
 \begin{document}
 \frontmatter
 %
-\chapter*{\Huge \center Crowd Task Language 2022 Report}
+\chapter*{\Huge \center Crowd Task Language \\ 2022 Report}
 \thispagestyle{empty}
 %{\hspace{0.25in} \includegraphics{./ru_sun.jpg} }
 \section*{\huge \center Yixuan Luo}
-% \newpage
-% \subsection*{\center \normalsize Copyright \copyright 2009 by Suresh Emre}
-% \subsection*{\center \normalsize All rights reserved.}
-% \subsection*{\center \normalsize ISBN \dots}
-% \subsection*{\center \normalsize \dots Publications}
-%
-% \chapter*{\center \normalsize To my Son}
 %
 \tableofcontents
 %
@@ -61,14 +91,14 @@
 \chapter{Introduction}
 % your text here
 %
-\chapter{Language Mode}
-% your text here
-%
+
+% ------------------------------ Language Model ------------------------------ %
+\input{chapters/languageModel.tex}
+
 \chapter{CTDL Virtual Machine}
 
-% \chapter*{Appendix A: Grammar}
 \appendix
-\input{chapters/appendixA.tex}
+\input{chapters/grammar.tex}
 \backmatter
 
 \end{document}

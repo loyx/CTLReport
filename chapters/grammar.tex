@@ -1,0 +1,119 @@
+\chapter{CTL Grammar}
+The grammar of CTL uses the EBNF(Extended Backus-Naur Form), where:
+\begin{itemize}
+    \item symbol $[\dots]$ indicates that the items in square brackets is optional;
+    \item symbol $\{\dots\}$ indicates that the items in curly braces can be repeated 0 or more times;
+    \item symbol $(\dots)$ indicates that the items in parentheses is a group;
+    \item Terminators are either single-quoted strings or in $\mathbf{bold}$.
+\end{itemize}
+% The grammar of the CTL is represented as follows, where $program$ is the start symbol.
+The CTL grammar is divided into two parts: the first part describes the crowd task, and the second part describes data processing using embedded functional programming paradigm.
+
+\section{Crowd Task}
+
+\begin{grammar}
+    \stm{taskUnit}{\stt{CrowdTask} \ter{Ident} \stt{\leftBrace} \nter{main} \stt{\rightBrace}}
+    \stm{main}{\rep{\nter{taskinfo}} \rep{\nter{taskUnit}}}
+    \stm{taskinfo}{\nter{constraints} \OR \nter{hyperPart} \OR \nter{execute}}
+    \stm{constraints}{\stt{Constraints} \stt{:} \stt{\leftBrace} \nter{cMain} \stt{\rightBrace}}
+    \stm{cMain}{\rep{\nter{constDim}}}
+    \stm{constDim}{\nter{temporal} \OR \nter{spatial} \OR \nter{precedence}} 
+        \orStm{\nter{repeat} \OR \nter{priority}}
+    \stm{temporal}{\stt{Temporal} \stt{:} \stt{[} {\nter{timeType}} \stt{]}}
+    \stm{timeType}{\gup{{\nter{timeValue} \OR \nter{tempSugar}}} }
+        \orStm{\gup{{\nter{timeValue} \OR \nter{tempSugar}}} \rep{\stt{,} \nter{timeType}} }
+    \stm{timeValue}{\stt{Interval} \ter{TimeLiteral} \ter{TimeLiteral}}
+        \orStm{\stt{Point} \ter{TimeLiteral}}
+    \stm{timeSugar}{\ter{TimeLiteral}}
+        \orStm{\ter{TimeLiteral} \stt{-} \ter{TimeLiteral}}
+    \stm{spatial}{\stt{Spatial} \stt{:} \stt{[} \nter{spatialType}\stt{]}}
+    \stm{spatialType}{\gup{\nter{spatialValue} \OR \nter{spatialSugar}}}
+        \orStm{\gup{\nter{spatialValue} \OR \nter{spatialSugar}} \rep{\stt{,} \nter{spatialType}}}
+    \stm{spatialValue}{\stt{PointLocation} \ter{Coord}}
+        \orStm{\stt{Line} \stt{[} \nter{lineVal} \stt{]}}
+        \orStm{\stt{Polyon} \stt{[} \nter{polyVal} \stt{]}}
+    \stm{lineVal}{\ter{Coord} \stt{,} \ter{Coord} \rep{\stt{,} \ter{Coord}}}
+    \stm{polyVal}{\ter{Coord} \stt{,} \ter{Coord} \stt{,} \ter{Coord} \rep{\stt{,} \ter{Coord}}}
+    \stm{spatialSugar}{\ter{Coord}}
+        \orStm{\ter{Coord} \stt{-} \ter{Coord}}
+    \stm{precedence}{\stt{Precedence} \stt{:} \stt{[} \nter{precVal}\stt{]}}
+    \stm{precVal}{\nter{taskPrec}\rep{\stt{,} \nter{taskPrec}}}
+    \stm{taskPrec}{\ter{Ident} \stt{->} \ter{Ident} \rep{\stt{->} \ter{Ident}}}
+    \stm{repeat}{\stt{Repeat} \stt{:} \stt{[} \nter{repeatType}\stt{]}}
+    \stm{repeatType}{\ter{IntConst} \OR \stt{INF}}
+        \orStm{\nter{dateType} \nter{listGen}}
+    \stm{dateType}{\stt{Day} \OR \stt{Month} \OR \stt{Year}}
+    \stm{priority}{\stt{Priority} \stt{:} \ter{IntConst}}
+    \stm{hyperPart}{\stt{Hparticipant} \stt{:} \stt{[} \nter{hPartValue}\stt{]}}
+    \stm{hPartValue}{\opt{\stt{every}} \ter{Ident}}
+        \orStm{\gup{\opt{\stt{every}} \ter{Ident}} \rep{\stt{,} \nter{hPartValue}}}
+    \stm{execute}{\stt{Execute} \stt{:} \stt{\leftBrace} \nter{subLang}\stt{\rightBrace}}
+\end{grammar}
+
+\section{Embedded Functional Programming}
+
+\begin{grammar}
+    \stm{subLang}{}
+\end{grammar}
+
+\section{Terminator Characteristics}
+\subsection{Ident}\label{Ident}
+An identifier (\textbf{Ident}) consists of a letter followed by zero or more letters, digits, underscores, and single quotes.
+\begin{grammar}
+    \stm{Identifier}{\nter{letter} \rep{\nter{letter}\OR \nter{digit}} }
+    \stm{letter}{\nter{small} \OR \nter{large} \OR \_}
+    \stm{small}{a | b | \dots | z}
+    \stm{large}{A | B | \dots | Z}
+\end{grammar}
+
+\subsection{TimeLiteral}\label{TimeLiteral}
+Time literals represent a point in time using the 24-hour system (\ref{timeformat}), with a minimum precision of 1 minute.
+There should be no space between the hour and the colon, and the same between the minute and the colon
+\begin{equation}\label{timeformat}
+    hh:mm
+\end{equation}
+For example, the following is a legal time literal.
+
+\begin{center}
+    \begin{tabular}{c}
+        00:12 \\
+        20:30 \\
+        23:59 \\
+    \end{tabular}
+\end{center}
+And these things are not legal.
+
+\begin{center}
+    \begin{tabular}{c}
+        00:62 \\
+        25:30 \\
+        24:00 \\
+    \end{tabular}
+\end{center}
+
+\subsection{Coord} \label{Coord}
+Coordinate uses WGS coordinates to represent a physical location, and wgs coordinates are classified as a \hyperref[FloatConst]{FloatConst}.
+\begin{grammar}
+    \stm{coordinate}{\stt{(} [+|-]\ter{FloatConst} \stt{,} [+|-]\ter{FloatConst} \stt{)}}
+\end{grammar}
+For instance, the \textbf{Coord}$(108.911, 34.153)$ represent the location of  xi'an, China in WGS.
+
+\subsection{Numeric Literals}\label{FloatConst}\label{IntConst}
+\begin{grammar}
+    \stm{decimal}{\nter{digit}\rep{\nter{digit}}}
+    \stm{octal}{\nter{octit} \rep{\nter{octit}}}
+    \stm{hexadecimal}{\nter{hexit} \rep{\nter{hexit}}}
+    \stm{digit}{0 | 1 | \dots | 9}
+    \stm{octit}{0|1|\dots|7}
+    \stm{hexit}{\nter{digit} | A | \dots | F|a|\dots|f}
+    \\
+    \stm{FloatConst}{\nter{decimal}\stt{.}\nter{decimal}\opt{\nter{exponent}} }
+        \orStm{\nter{decimal}\nter{exponent}}
+    \stm{exponent}{(e|E)[+|-]\nter{decimal}}
+    \\
+    \stm{IntConst}{\nter{decimal}}
+        \orStm{\stt{0o} \nter{octal} \OR \stt{0O} \nter{octal}}
+        \orStm{\stt{0x} \nter{hexadecimal} \OR \stt{0X}\nter{hexadecimal}}
+\end{grammar}
+
+

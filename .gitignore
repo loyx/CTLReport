@@ -3,6 +3,7 @@
 *.pdf
 *.bbl
 *.toc
+*.out
 *.synctex.gz
 *.synctex(busy)
 .vscode
