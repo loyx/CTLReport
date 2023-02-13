@@ -9,7 +9,7 @@ The grammar of CTL uses the EBNF(Extended Backus-Naur Form), where:
 % The grammar of the CTL is represented as follows, where $program$ is the start symbol.
 The CTL grammar is divided into two parts: the first part describes the crowd task, and the second part describes data processing using embedded functional programming paradigm.
 
-\section{Crowd Task}
+% \section{Crowd Task}
 
 \begin{grammar}
     \stm{taskUnit}{\stt{CrowdTask} \ter{Ident} \stt{\leftBrace} \nter{main} \stt{\rightBrace}}
@@ -48,12 +48,6 @@ The CTL grammar is divided into two parts: the first part describes the crowd ta
     \stm{hPartValue}{\opt{\stt{every}} \ter{Ident}}
         \orStm{\gup{\opt{\stt{every}} \ter{Ident}} \rep{\stt{,} \nter{hPartValue}}}
     \stm{execute}{\stt{Execute} \stt{:} \stt{\leftBrace} \nter{subLang}\stt{\rightBrace}}
-\end{grammar}
-
-\section{Embedded Functional Programming}
-
-\begin{grammar}
-    \stm{subLang}{}
 \end{grammar}
 
 \section{Terminator Characteristics}
