@@ -1,0 +1,32 @@
+\chapter{Introduction}
+
+CTL (Crowd Task Language) is a language for the field of \href{https://en.wikipedia.org/wiki/Crowdsourcing}{Crowdsourcing} and \href{https://en.wikipedia.org/wiki/Crowdsensing}{Crowdsensing}, which provides the ability to describe the data collection process at a granular level, as well as the ability to describe the computation in a way that is equivalent to the capabilities of other high-level programming languages (C, Python, Java, etc.).
+
+Other high-level programming languages solve problems in such a way that the language is concerned with the computational process of the data after it has been collected. But CTL wants to extend this paradigm, where the programming language's capabilities will be extended to before data collection. The principle behind this is based on an extended Turing machine theory called Sensing Turing Machine Theory (which will be introduced in chapter \ref{chapter:SenseTuringMachine}).
+
+This report defines the syntax for CTL programs and an informal abstract semantics for the meaning of such programs.
+\section{Program Structure}
+A CTL program can be viewed as two parts, the part describing data sensing and the part describing data computation. The collection process is described using the following concepts.
+The collection process is described using the following concepts:
+\begin{itemize}
+    \item Task Constraints 
+    \item Hyper Participants 
+\end{itemize}
+The task constraints determine the structure of the sensing task itself, and the hyper participants describe the specific data types required for the task.
+
+In the computational part of the CTL, a hybrid object-oriented and functional programming paradigm is provided. It has the following features:
+\begin{itemize}
+    \item Object-oriented
+    \item high-order function
+    \item list, tuple and dict comprehensions
+    \item a rich set of primitive datatype
+\end{itemize}
+
+\section{Notation}
+The descriptions of lexical analysis and syntax use a mixture of \href{https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form}{EBNF} and \href{https://en.wikipedia.org/wiki/Parsing_expression_grammar}{PEG}. This uses the following style of definition:
+\begin{grammar}
+    \stm{taskUnit}{\stt{CrowdTask} \ter{Ident} \stt{\leftBrace} \nter{main} \stt{\rightBrace}}
+\end{grammar}
+Each rule begins with a name (which is the name defined by the rule) and $\to$. A vertical bar ($|$) is used to separate alternatives; it is the least binding operator in this notation. A star ($*$) means zero or more repetitions of the preceding item; likewise, a plus ($+$) means one or more repetitions, and a phrase enclosed in square brackets ($[ ]$) means zero or one occurrence (in other words, the enclosed phrase is optional). The * and + operators bind as tightly as possible; parentheses are used for grouping. Literal strings are enclosed in quotes. White space is only meaningful to separate tokens. Rules are normally contained on a single line; rules with many alternatives may be formatted alternatively with each line after the first beginning with a vertical bar.
+
+
