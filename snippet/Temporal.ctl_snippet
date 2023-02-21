@@ -1,0 +1,6 @@
+Temporal:
+    TemporalInterval(10:00, 12:00)
+    10:00 – 12:00
+    Point(15:31)
+    15:31
+    Task1.returnData().Temporal()

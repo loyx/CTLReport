@@ -25,7 +25,7 @@ In the computational part of the CTL, a hybrid object-oriented and functional pr
 \section{Notation}
 The descriptions of lexical analysis and syntax use a mixture of \href{https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form}{EBNF} and \href{https://en.wikipedia.org/wiki/Parsing_expression_grammar}{PEG}. This uses the following style of definition:
 \begin{grammar}
-    \stm{taskUnit}{\stt{CrowdTask} \ter{Ident} \stt{\leftBrace} \nter{main} \stt{\rightBrace}}
+    \stm{taskUnit}{\stt{CrowdTask} \gsp \ter{Identifier} \gsp \stt{\leftBrace} \gsp \nter{main} \gsp \stt{\rightBrace}}
 \end{grammar}
 Each rule begins with a name (which is the name defined by the rule) and $\to$. A vertical bar ($|$) is used to separate alternatives; it is the least binding operator in this notation. A star ($*$) means zero or more repetitions of the preceding item; likewise, a plus ($+$) means one or more repetitions, and a phrase enclosed in square brackets ($[ ]$) means zero or one occurrence (in other words, the enclosed phrase is optional). The * and + operators bind as tightly as possible; parentheses are used for grouping. Literal strings are enclosed in quotes. White space is only meaningful to separate tokens. Rules are normally contained on a single line; rules with many alternatives may be formatted alternatively with each line after the first beginning with a vertical bar.
 

@@ -10,6 +10,10 @@
 \usepackage{newtxtext,newtxmath}
 \usepackage{xspace}
 \usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{listings}
+\usepackage{color}
 
 
 % \usepackage{hyperref}
@@ -35,40 +39,79 @@
 % ---------------------------------------------------------------------------- %
 %                                   settings                                   %
 % ---------------------------------------------------------------------------- %
+\lstdefinelanguage{ctl}{  
+    keywords={Constraints, Date}
+    % morekeywords={Constraints, Date}
+    othereywords={->}
+}
+\lstset{
+    numbers=left,
+    frame=single,
+    basicstyle=\ttfamily\footnotesize,
+    frameround=tttt,
+    xleftmargin=0.15\linewidth,
+    xrightmargin=0.05\linewidth,
+    keywordstyle=\color{yellow}
+}
 
 % ---------------------------------------------------------------------------- %
 %                                   self cmd                                   %
 % ---------------------------------------------------------------------------- %
 
+% ---------------------------- grammar env conuter --------------------------- %
+\newcounter{grammarCnt}
+
 % ---------------------------- grammar enviromnent --------------------------- %
 \newenvironment{grammar}{
+    \setlength{\tabcolsep}{1pt} % reduce spacing between columns
     \begin{small}
-    % \begin{center}
-    \begin{longtable}{rcl}
+    \begin{longtable}{lrcl}
 }{
     \end{longtable}
-    % \end{center}
     \end{small}
+    \stepcounter{grammarCnt}
 }
 % ----------------------------- grammar statement ---------------------------- %
 \newcommand{\bs}{\boldsymbol}
 \newcommand{\mt}{\texttt}
 
-\newcommand{\baseStm}[3]{\raisebox{\ht\strutbox}{\hypertarget{grammer:#1}{}}$#1$&$#2$&$#3$\\ }
+\newcommand{\baseStm}[4][]{#1&\raisebox{\ht\strutbox}{\hypertarget{grammar-\arabic{grammarCnt}:#2}{}}$#2$&$#3$&$#4$\\ }
+
 \newcommand{\stm}[2]{\baseStm{#1}{\to}{#2}}
 \newcommand{\emptyStm}{\\}
-\newcommand{\orStm}[1]{&&$\mspace{9mu}\OR #1$ \\}
-\newcommand{\stt}[1]{\texttt{\textbf{'#1'}}\gsp}
-\newcommand{\ter}[1]{\hyperref[#1]{\mathbf{#1}}\gsp}
-\newcommand{\nter}[1]{\hyperlink{grammer:#1}{#1}\gsp}
-\newcommand{\gsp}{\mspace{10mu} }
+\newcommand{\orStm}[1]{&&|&$#1$\\}
+\newcommand{\fragment}[2]{\baseStm[fragment]{#1}{\to}{#2}}
+
+\newcommand{\stt}[1]{\texttt{\textbf{'#1'}}}
+\newcommand{\ter}[1]{\hyperref[#1]{\texttt{\footnotesize{#1}}}}
+\newcommand{\ternh}[1]{\texttt{\footnotesize{#1}}}
+\newcommand{\nter}[1]{\hyperlink{grammar-\arabic{grammarCnt}:#1}{#1}}
+\newcommand{\gsp}{\mspace{6mu} }
+
+\newcommand{\sttsp}[1]{\stt{#1}\gsp}
+\newcommand{\tersp}[1]{\ter{#1}\gsp}
+\newcommand{\ntersp}[1]{\nter{#1}\gsp}
+
 \newcommand{\opt}[1]{ [ \mspace{2mu} #1 \mspace{-8mu} ] }
 \newcommand{\rep}[1]{\leftBrace \mspace{2mu} #1 \mspace{-8mu}\rightBrace}
-\newcommand{\gup}[1]{ ( \mspace{2mu} #1 \mspace{-8mu} )}
+
+\newcommand{\gup}[1]{(#1)}
+\newcommand{\gplus}{\texttt{+}}
+\newcommand{\gstar}{\texttt{*}}
+\newcommand{\gwild}{\texttt{?}}
+
+\newcommand{\bop}[1]{\texttt{bop=}#1}
+\newcommand{\bopsp}[1]{\bop{#1}\gsp}
+\newcommand{\prefix}[1]{\texttt{prefix=}#1}
+\newcommand{\prefixsp}[1]{\prefix{#1}}
+\newcommand{\postfix}[1]{\texttt{postfix=}#1}
+\newcommand{\assocRight}{\texttt{<assoc=right>}}
+\newcommand{\assocRightsp}{\assocRight\gsp}
 
 \newcommand{\leftBrace}{\{}
 \newcommand{\rightBrace}{\}}
 \newcommand{\OR}{\mspace{-9mu} | \mspace{2mu}}
+\newcommand{\ORsp}{|\gsp}
 \newcommand{\squote}{' \mspace{10mu}}
 
 % --------------------------------- self cmd --------------------------------- %

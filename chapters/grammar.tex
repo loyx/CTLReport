@@ -13,6 +13,9 @@ The CTL grammar is divided into two parts: the first part describes the crowd ta
 % \section{Crowd Task}
 
 \begin{grammar}
+
+
+    \emptyStm
     \stm{taskUnit}{\stt{CrowdTask} \ter{Ident} \stt{\leftBrace} \nter{main} \stt{\rightBrace}}
     \stm{main}{\rep{\nter{taskinfo}} \rep{\nter{taskUnit}}}
     \stm{taskinfo}{\nter{constraints} \OR \nter{hyperPart} \OR \nter{execute}}
@@ -52,13 +55,14 @@ The CTL grammar is divided into two parts: the first part describes the crowd ta
 \end{grammar}
 
 \section{Terminator Characteristics}
-\subsection{Ident}\label{Ident}
-An identifier (\textbf{Ident}) consists of a letter followed by zero or more letters, digits, underscores, and single quotes.
+\subsection{Identifier}\label{Identifier}
+An identifier consists of a letter followed by zero or more letters, digits, underscores, and single quotes.
 \begin{grammar}
-    \stm{Identifier}{\nter{letter} \rep{\nter{letter}\OR \nter{digit}} }
-    \stm{letter}{\nter{small} \OR \nter{large} \OR \_}
-    \stm{small}{a | b | \dots | z}
-    \stm{large}{A | B | \dots | Z}
+    \stm{Identifier}{\ntersp{Letter} \nter{LetterOrDigit}\gstar}
+    \emptyStm
+    \fragment{Letter}{\texttt{[a-zA-Z\_]}}
+    \fragment{LetterOrDigit}{\nter{Letter}}
+        \orStm{\texttt{[0-9]}}
 \end{grammar}
 
 \subsection{TimeLiteral}\label{TimeLiteral}
@@ -86,10 +90,11 @@ And these things are not legal.
     \end{tabular}
 \end{center}
 
-\subsection{Coord} \label{Coord}
+\subsection{CoordLiteral} \label{CoordLiteral}
 Coordinate uses WGS coordinates to represent a physical location, and wgs coordinates are classified as a \hyperref[FloatConst]{FloatConst}.
 \begin{grammar}
-    \stm{coordinate}{\stt{(} [+|-]\ter{FloatConst} \stt{,} [+|-]\ter{FloatConst} \stt{)}}
+    \stm{CoordLiteral}{\sttsp{(}  \stt{,} [+|-]\ter{FloatConst} \stt{)}}
+    \stm{}{\gup{\sttsp{+} \ORsp \stt{-}}\gwild\gsp\ter{FloatConst}}
 \end{grammar}
 For instance, the \textbf{Coord}$(108.911, 34.153)$ represent the location of  xi'an, China in WGS.
 

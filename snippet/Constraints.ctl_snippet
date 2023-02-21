@@ -1,0 +1,20 @@
+Constraints:
+    Temporal:
+        10:00 - 12:00
+        16:00 - 18:00
+    
+    Date:
+        2023/2/10 - 2023/2/28
+
+    Spatial:
+        (108.93,34.32) - (110.93,54.32)
+
+    Dependence:
+        Task1 -> Task2 -> Task3
+        Task3 -> Task4
+    
+    dataQuantity: 100
+
+    Repeat: INF
+    
+    Priority: 5

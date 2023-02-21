@@ -1,10 +1,118 @@
 \chapter{Language Model}
-The CTDL language model is divided into two parts: the sensing model and the computing model. Language theory in chapterMathematical theory of language in chapter \ref{chapter:SenseTuringMachine}
+The CTDL language model is divided into two parts: the sensing model and the computing model. Mathematical theory of language in chapter \ref{chapter:SenseTuringMachine}.
 \section{Sensing Model}
 
-\subsection{}
+\subsection{Task Constrains}
+Task constraints are constraints that describe a crowd task itself, e.g., time constraints, spatial constraints, and dependence constraints. The task constraints are not directly related to the participants performing the task, but can directly affect the task scheduling of the system. Listing \ref{Code:Constraints} shows a complete code snippet of the constraint definition.
 
-\subsection{}
+\lstinputlisting[caption={CTL Constraints Part Snippet}, label=Code:Constraints, language=ctl]{./snippet/Constraints.ctl_snippet}
+
+There are two types of 'dimension' concepts, namely task dimension and constraint dimension. The task dimension affects the scheduling of tasks, and the constraint dimension is used to describe a class of constraints. Each constraint dimension belongs to a task dimension. The currently supported task dimensions and constraint dimensions are shown in Table \ref{tab:TaskDimensions}. 
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{cc}
+    \toprule
+    Task Dim. & Constraint Dim. \\
+    \midrule
+    \multirow{2}{*}{Time Dimension}& Temporal  \\
+    & Date \\
+    Space Dimension & Spatial  \\
+    \multirow{2}{*}{Precedence Dimension}& Dependence \\
+    & Priority  \\
+    \multirow{2}{*}{Quantity Dimension}& Repeat \\
+    & DataQuatity \\
+    \bottomrule
+\end{tabular}
+\caption{Task Dimensions}
+\label{tab:TaskDimensions}
+\end{table}
+
+\subsubsection{Temporal}
+The Temporal dimension supports the use of a 24-hour (or 12-hour) system to describe the time that a task is executed with a minimum precision of 1 minute (as listing \ref{Code:Temporal} shows). The specific constraint types that can be used are:
+\begin{itemize}
+    \item Temporal Interval: \texttt{TemporalInterval(10:00, 12:00)} or its syntactic sugar version: \texttt{10:00 - 12:00}.
+    \item Temporal Point: \texttt{TemporalPoint(15:30)} or its syntactic sugar version: \texttt{15:30}.
+    \item Expression, which results in Temporal.
+\end{itemize}
+
+\lstinputlisting[caption={Temporal Dimension Snippet}, label=Code:Temporal, language=ctl]{./snippet/Temporal.ctl_snippet}
+
+\subsubsection{Date}
+Date constraints provide a coarse-grained description of time. Date literals can be used to describe the start time and deadline of a task. The constraint types that can be used include:
+\begin{itemize}
+    \item FromNowTo: \texttt{FromNowTo(2023/2/13)}.
+    \item DateInterval(2023/2/10, 2023/2/28) and its syntactic sugar version: \texttt{2023/2/10 - 2023/2/28}
+\end{itemize}
+
+\lstinputlisting[caption={Date Dimension Snippet}, label=Code:Date, language=ctl]{./snippet/Date.ctl_snippet}
+
+\subsubsection{Spatial}
+The Spatial dimension supports 2-dimensional spatial regions described using latitude and longitude (as listing \ref{Code:Spatial} shows). Specific types include:
+\begin{itemize}
+    \item Point Location: \texttt{PointLocation(108.93, 43.32)} or its syntactic sugar version: (108.93, 43.32).
+    \item Line: \texttt{Line([(108.93,34.32), (110.93,54.32), (138.93,14.32)])}.
+    \item Polyon: \texttt{Polygon([(108.93,34.32), (110.93,54.32), (138.93,14.32)])}.
+    \item Rectangle region constraint declares syntactic sugar: \texttt{(108.93,34.32) - (110.93,54.32)}.
+    \item Expression, which results in Spatial. 
+\end{itemize}
+
+\lstinputlisting[caption={Spatial Dimension Snippet}, label=Code:Spatial, language=ctl]{./snippet/Spatial.ctl_snippet}
+
+\subsubsection{Dependence}
+Dependence constraints support defining dependency concerns between multiple tasks. All dependencies need to form partial order relationships. CTL provides a \texttt{->} operator to define task dependencies, as shown in \ref{Code:Dependence}.
+
+\lstinputlisting[caption={Dependence Dimension Snippet}, label=Code:Dependence, language=ctl]{./snippet/Dependence.ctl_snippet}
+
+The \texttt{"PreTask->SuccTask"} statement implies that the PreTask must have been executed before the SuccTask is executed. At the same time, SuccTask can access the results of PreTask.
+
+\subsubsection{Priority}
+The Priority constraint uses an integer to indicate the absolute priority of the task. The optional range is 1-9, the higher the number, the higher the priority. The default value is 5.
+\subsubsection{Repeat}
+The Repeat constraint defines the number of repeated executions of the task. An integer can be used to specify the exact number of repeated executions, or the keyword INF can be used to indicate that the task will be repeated infinitely until the task is manually canceled, as shown in listing \ref{Code:Repeat}. It should be noted that it cannot be used with the Date dimension at the same time.
+
+\lstinputlisting[caption={Repeat Dimension Snippet}, label=Code:Repeat, language=ctl]{./snippet/Repeat.ctl_snippet}
+
+
+\subsubsection{Combination Constraint Types}
+Instances of different constraint types can be combined under the same constraint dimension. In this case, the instances of each constraint type are logically related to each other. For example, listing \ref{Code:Combination}.
+
+\lstinputlisting[caption={Combination Constraint Type Snippet}, label=Code:Combination, language=ctl]{./snippet/Combination.ctl_snippet}
+
+\subsubsection{Grammar}
+The grammar of task constraints is as following:
+\begin{grammar}
+    \stm{constraintDef}{\sttsp{Constraints} \sttsp{:} \tersp{NEWLINE} \tersp{INDENT} \nter{cDim}\gplus \gsp \ter{DEDENT}}
+    \stm{cDim}{\ntersp{constraintDim} \sttsp{:} \nter{cSuite}}
+    \stm{cSuite}{\gup{\ntersp{cStmt} \ORsp \tersp{NEWLINE} \tersp{INDENT} \nter{cStmt}\gplus \gsp \ter{DEDENT} } }
+    \stm{constraintDim}{\sttsp{Temporal} \ORsp \sttsp{Spatial} \ORsp \sttsp{Precedence} \ORsp \sttsp{Date} }
+        \orStm{\stt{Priority}}
+    \stm{cStmt}{\ntersp{expression} (\stt{;})\gwild \gsp \ter{NEWLINE}}
+
+    \stm{expression}{\ntersp{primary}}
+        \orStm{\ntersp{expression} \bopsp{\stt{.} } \gup{\tersp{Identifier} \ORsp \nter{callOrCreate}}}
+        \orStm{\ntersp{expression} \sttsp{[} \ntersp{expression} \stt{]}}
+        \orStm{\ntersp{callOrCreate}}
+        \orStm{\ntersp{expression} \bopsp{\gup{\sttsp{*} \ORsp \sttsp{/} \ORsp \stt{\%}}} \nter{expression}}
+        \orStm{\ntersp{expression} \bopsp{\gup{\sttsp{+} \ORsp \stt{-}}} \nter{expression}}
+        \orStm{\assocRightsp \tersp{Identifier} \bopsp{\stt{->}} \ter{Identifier}}
+    \stm{primary}{\sttsp{(} \gup{\nter{listComp}}\gwild \gsp \sttsp{)}}
+        \orStm{\sttsp{[} \gup{\nter{listComp}}\gwild \gsp \sttsp{]}}
+        \orStm{\ter{Identifier}}
+        \orStm{\nter{literal}}
+    \stm{listComp}{\ntersp{expression} (\sttsp{,} \nter{expression})\gstar \gsp (\stt{,})\gwild}
+    \stm{literal}{\nter{integerLiteral} }
+        \orStm{\stt{INF}}
+        \orStm{\nter{floatLiteral} }
+        \orStm{\ter{TimeLiteral} }
+        \orStm{\ter{DateLiteral}}
+    \stm{integerLiteral}{\gup{\tersp{DecimalLiteral} \ORsp \tersp{HexLiteral} \ORsp \ter{OctLiteral}}}
+    \stm{floatLiteral}{\gup{\tersp{FloatLiteral} \ORsp \ter{HexFloatLiteral}}}
+    \stm{callOrCreate}{\tersp{Identifier} \sttsp{(} \nter{expressionList}\gwild\gsp \stt{)}}
+
+\end{grammar}
+
+\subsection{Hyper Participant}
 
 \section{Computing Model}
 \subsection{Basic}
