@@ -5,7 +5,7 @@ The CTDL language model is divided into two parts: the sensing model and the com
 \subsection{Task Constrains}
 Task constraints are constraints that describe a crowd task itself, e.g., time constraints, spatial constraints, and dependence constraints. The task constraints are not directly related to the participants performing the task, but can directly affect the task scheduling of the system. Listing \ref{Code:Constraints} shows a complete code snippet of the constraint definition.
 
-\lstinputlisting[caption={CTL Constraints Part Snippet}, label=Code:Constraints, language=ctl]{./snippet/Constraints.ctl_snippet}
+\lstinputlisting[caption={CTL Constraints Part Snippet}, label=Code:Constraints, language=ctl]{./snippet/Constraints/Constraints.ctl_snippet}
 
 There are two types of 'dimension' concepts, namely task dimension and constraint dimension. The task dimension affects the scheduling of tasks, and the constraint dimension is used to describe a class of constraints. Each constraint dimension belongs to a task dimension. The currently supported task dimensions and constraint dimensions are shown in Table \ref{tab:TaskDimensions}. 
 
@@ -36,7 +36,7 @@ The Temporal dimension supports the use of a 24-hour (or 12-hour) system to desc
     \item Expression, which results in Temporal.
 \end{itemize}
 
-\lstinputlisting[caption={Temporal Dimension Snippet}, label=Code:Temporal, language=ctl]{./snippet/Temporal.ctl_snippet}
+\lstinputlisting[caption={Temporal Dimension Snippet}, label=Code:Temporal, language=ctl]{./snippet/Constraints/Temporal.ctl_snippet}
 
 \subsubsection{Date}
 Date constraints provide a coarse-grained description of time. Date literals can be used to describe the start time and deadline of a task. The constraint types that can be used include:
@@ -45,7 +45,7 @@ Date constraints provide a coarse-grained description of time. Date literals can
     \item DateInterval(2023/2/10, 2023/2/28) and its syntactic sugar version: \texttt{2023/2/10 - 2023/2/28}
 \end{itemize}
 
-\lstinputlisting[caption={Date Dimension Snippet}, label=Code:Date, language=ctl]{./snippet/Date.ctl_snippet}
+\lstinputlisting[caption={Date Dimension Snippet}, label=Code:Date, language=ctl]{./snippet/Constraints/Date.ctl_snippet}
 
 \subsubsection{Spatial}
 The Spatial dimension supports 2-dimensional spatial regions described using latitude and longitude (as listing \ref{Code:Spatial} shows). Specific types include:
@@ -57,12 +57,12 @@ The Spatial dimension supports 2-dimensional spatial regions described using lat
     \item Expression, which results in Spatial. 
 \end{itemize}
 
-\lstinputlisting[caption={Spatial Dimension Snippet}, label=Code:Spatial, language=ctl]{./snippet/Spatial.ctl_snippet}
+\lstinputlisting[caption={Spatial Dimension Snippet}, label=Code:Spatial, language=ctl]{./snippet/Constraints/Spatial.ctl_snippet}
 
 \subsubsection{Dependence}
 Dependence constraints support defining dependency concerns between multiple tasks. All dependencies need to form partial order relationships. CTL provides a \texttt{->} operator to define task dependencies, as shown in \ref{Code:Dependence}.
 
-\lstinputlisting[caption={Dependence Dimension Snippet}, label=Code:Dependence, language=ctl]{./snippet/Dependence.ctl_snippet}
+\lstinputlisting[caption={Dependence Dimension Snippet}, label=Code:Dependence, language=ctl]{./snippet/Constraints/Dependence.ctl_snippet}
 
 The \texttt{"PreTask->SuccTask"} statement implies that the PreTask must have been executed before the SuccTask is executed. At the same time, SuccTask can access the results of PreTask.
 
@@ -71,13 +71,13 @@ The Priority constraint uses an integer to indicate the absolute priority of the
 \subsubsection{Repeat}
 The Repeat constraint defines the number of repeated executions of the task. An integer can be used to specify the exact number of repeated executions, or the keyword INF can be used to indicate that the task will be repeated infinitely until the task is manually canceled, as shown in listing \ref{Code:Repeat}. It should be noted that it cannot be used with the Date dimension at the same time.
 
-\lstinputlisting[caption={Repeat Dimension Snippet}, label=Code:Repeat, language=ctl]{./snippet/Repeat.ctl_snippet}
+\lstinputlisting[caption={Repeat Dimension Snippet}, label=Code:Repeat, language=ctl]{./snippet/Constraints/Repeat.ctl_snippet}
 
 
 \subsubsection{Combination Constraint Types}
 Instances of different constraint types can be combined under the same constraint dimension. In this case, the instances of each constraint type are logically related to each other. For example, listing \ref{Code:Combination}.
 
-\lstinputlisting[caption={Combination Constraint Type Snippet}, label=Code:Combination, language=ctl]{./snippet/Combination.ctl_snippet}
+\lstinputlisting[caption={Combination Constraint Type Snippet}, label=Code:Combination, language=ctl]{./snippet/Constraints/Combination.ctl_snippet}
 
 \subsubsection{Grammar}
 The grammar of task constraints is as following:
@@ -108,11 +108,99 @@ The grammar of task constraints is as following:
         \orStm{\ter{DateLiteral}}
     \stm{integerLiteral}{\gup{\tersp{DecimalLiteral} \ORsp \tersp{HexLiteral} \ORsp \ter{OctLiteral}}}
     \stm{floatLiteral}{\gup{\tersp{FloatLiteral} \ORsp \ter{HexFloatLiteral}}}
-    \stm{callOrCreate}{\tersp{Identifier} \sttsp{(} \nter{expressionList}\gwild\gsp \stt{)}}
+    \stm{callOrCreate}{\tersp{Identifier} (\sttsp{(} \nter{expressionList}\gwild\gsp \stt{)})\gwild}
+    \stm{expressionList}{\ntersp{expression} (\sttsp{,} \nter{expression})\gstar}
 
 \end{grammar}
 
 \subsection{Hyper Participant}
+Crowd Intelligence tasks can and can only be completed by numerous participants, and the task requires many capabilities from the participants, such as some perceptual capability or some computational capability, or even some intelligence.
+
+In CTL, the developer of a Crowd Intelligence task only needs to consider what data and abilties the task participants provide, and CVM will break down the hyper-participants into real participants in the system in a reasonably efficient way and hand them over to CrowdOS for processing. A code snippet of the hyperparticipant declaration is shown in \ref{Code:HParticipant}.
+
+\lstinputlisting[caption={Hyper Participant Snippet}, label=Code:HParticipant, language=ctl]{./snippet/Hparticipant/Hparticipant.ctl_snippet}
+
+\subsubsection{Ability}
+An ability is the smallest atomic characteristic of a hyperparticipant. An ability either specifies a characteristic that the hyperparticipant needs to have or specifies the type of data that the hyperparticipant needs to return, where the latter ability is called \textbf{returnable}.
+
+A ability can be declared using a statement like \texttt{Image()}. For some capabilities (e.g., HumanIntelligent and Specific), some optional constructor parameters can be accepted, and information about these parameters is passed to CVM and CrowdOS. For capabilities that do not require constructor parameters, \texttt{()} can be omitted. That is, \texttt{Image} is equivalent to \texttt{Iamge()}. For example listing \ref{Code:AbilityCreate}.
+
+\lstinputlisting[caption={Ability Create Snippet}, label=Code:AbilityCreate, language=ctl]{./snippet/Hparticipant/AbilityCreate.ctl_snippet}
+
+The currently supported capabilities and their meanings are shown in table \ref{tab:HparticipantAbilties}.
+
+\begin{landscape}
+\begin{table}[htbp]
+\footnotesize
+% \centering
+\setlength{\tabcolsep}{2pt} % reduce spacing between columns
+\begin{tabular}{cp{5cm}cccp{6cm}}
+    \toprule
+    Ability & Implication & Returnable & Return Type & Args & Arg Behavior \\ 
+    \midrule
+    HumanIntelligence & Requires participants to have a certain level of intelligence & $\times$ & None & String & Passes the specified text message to the participant with intelligence. \\
+    \rowcolor{lavender}
+    Specific & Specify a specific type of participant in CrowdOS & $\times$ & None & String & Specifies a special type of participant in the form of a String. See the CVM section and the CrowdOS system interface for details. \\
+    Location & Require participants to be able to provide location data & $\surd$ & Location & / & / \\
+    \rowcolor{lavender}
+    LocalTime & Require participant to return local time & $\surd$ & Time & / & / \\
+    Text & Require participant to return text data & $\surd$ & String & / & / \\
+    \rowcolor{lavender}
+    Video & Require participant to return video data& $\surd$ & Video & / & / \\
+    Image & Require participant to return image date& $\surd$ & Image & / & / \\
+    \rowcolor{lavender}
+    Acceleromenter & Require participant to return acceleration sensor data& $\surd$ & Acceleromenter & / & / \\
+    Gyroscope & Require participant to return gyroscope data& $\surd$ & Gyroscope & / & / \\
+    \rowcolor{lavender}
+    Light & Require participant to return light sensor data& $\surd$ & LightData& / & / \\
+    Magnetic\_field & Require participant to return magnetic field sensor data& $\surd$ & MagneticField & / & / \\
+    \rowcolor{lavender}
+    Orientation & Require participant to return orientation sensor data& $\surd$ & Orientation & / & / \\
+    Pressure & Require participant to return pressure sensor data& $\surd$ & Pressure & / & / \\
+    \rowcolor{lavender}
+    Proximity & Require participant to return proximity sensor data& $\surd$ & Proximity & / & / \\
+    Temperature & Require participant to return temperature sensor data& $\surd$ & Temperature & / & / \\
+    \bottomrule
+\end{tabular}
+\caption{Hparticipant Abilties}
+\label{tab:HparticipantAbilties}
+\end{table}
+\end{landscape}
+
+\subsubsection{Data Return Behavior}
+Hparticipant defines all the data types required by a CrowdTask, as well as the form of the data tuples to be passed to the CTL calculation section. For example, in listing \ref{Code:DataReturn}, six capabilities are defined that will be passed to the computation part in the form of tuples of \ref{eq:DateReturn1} when a data collection is completed.
+\lstinputlisting[caption={Data Return Snippet}, label=Code:DataReturn, language=ctl]{./snippet/Hparticipant/DataReturn.ctl_snippet}
+\begin{equation}\label{eq:DateReturn1}
+    \texttt{(Location, Time, Image, Text)}
+\end{equation}
+
+In tuple \ref{eq:DateReturn1}, the four dimensions are the data returned by the returnable capability declared in Hparticpant. The last two ability in Listing \ref{Code:DataReturn} is not returnable, so it does not appear in the data tuple.
+
+Hparticipant enables CTL programs to collect data using a virtual powerful participant. In practice, a single piece of data may be collected by multiple participants. For example, in \ref{eq:DateReturn1}, \texttt{(Location, Image)} are provided by real participant 1, and \texttt{(Time, Text)} are provided by real participant 2. A single piece of data provided by several participants is usually related to the CrowdOS system state and is unpredictable.
+
+\subsubsection{\texttt{nullable} Keyword}
+
+A capability may be declared nullable. If a capability is declared nullable, the corresponding dimension in the returned data meta ancestor may be None. e.g., in Listing \ref{Code:HParticipant}.
+
+The CTL computation part receives a data tuple in two possible cases, as shown in \ref{eq:Return1} and \ref{eq:Return2}. If all capabilities are not nullable, the computation is performed only when all dimensional data are collected. When nullable capabilities exist in the Hparticipant, the timing of the entry data return is determined by the CVM.
+
+\begin{equation}\label{eq:Return1}
+    \texttt{(Location, Time, Image)}
+\end{equation}
+
+\begin{equation}\label{eq:Return2}
+    \texttt{(Location, None, Image)}
+\end{equation}
+
+\subsubsection{Grammar}
+The grammar of HParticipant is as following:
+
+\begin{grammar}
+    \stm{Hparticipant}{\sttsp{Hparticipant} \sttsp{:} \nter{hSuite}}
+    \stm{hSuite}{\tersp{NEWLINE} \tersp{INDENT} \nter{abilityDecl}\gplus \ter{DEDENT}}
+    \stm{abilityDecl}{(\stt{nullable})\gwild\gsp \nter{callOrCreate}}
+\end{grammar}
+
 
 \section{Computing Model}
 \subsection{Basic}

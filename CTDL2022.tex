@@ -13,7 +13,8 @@
 \usepackage{booktabs}
 \usepackage{multirow}
 \usepackage{listings}
-\usepackage{color}
+\usepackage{lscape}
+\usepackage{xcolor, colortbl}
 
 
 % \usepackage{hyperref}
@@ -51,12 +52,14 @@
     frameround=tttt,
     xleftmargin=0.15\linewidth,
     xrightmargin=0.05\linewidth,
-    keywordstyle=\color{yellow}
 }
 
 % ---------------------------------------------------------------------------- %
 %                                   self cmd                                   %
 % ---------------------------------------------------------------------------- %
+
+% ---------------------------------- colors ---------------------------------- %
+\definecolor{lavender}{rgb}{0.9, 0.9, 0.98}
 
 % ---------------------------- grammar env conuter --------------------------- %
 \newcounter{grammarCnt}

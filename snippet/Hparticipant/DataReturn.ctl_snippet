@@ -1,0 +1,7 @@
+Hparticipant:
+    Location
+    LocalTime
+    Image
+    Text
+    Specific("skill:RoadRepair")
+    HumanIntelligence("Describe what you see")

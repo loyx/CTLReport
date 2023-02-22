@@ -1,0 +1,6 @@
+Hparticipant:
+    Location
+    nullable LocalTime
+    Image
+    HumanIntelligence("take a picture")
+    Specific("skill:RoadRepair")
