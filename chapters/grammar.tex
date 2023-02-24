@@ -1,57 +1,76 @@
 \chapter{CTL Grammar}
+
+\section{Complete Grammar}
 The grammar of CTL uses the EBNF(Extended Backus-Naur Form), where:
 The notation of CTDL is a mixture of \href{https://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_form}{EBNF} and \href{https://en.wikipedia.org/wiki/Parsing_expression_grammar}{PEG}. 
-\begin{itemize}
-    \item symbol $[\dots]$ indicates that the items in square brackets is optional;
-    \item symbol $\{\dots\}$ indicates that the items in curly braces can be repeated 0 or more times;
-    \item symbol $(\dots)$ indicates that the items in parentheses is a group;
-    \item Terminators are either single-quoted strings or in $\mathbf{bold}$.
-\end{itemize}
-% The grammar of the CTL is represented as follows, where $program$ is the start symbol.
-The CTL grammar is divided into two parts: the first part describes the crowd task, and the second part describes data processing using embedded functional programming paradigm.
-
-% \section{Crowd Task}
 
 \begin{grammar}
-
+    \stm{ctlFile}{(\nter{topDef})\gstar}
+    \stm{topDef}{\sttsp{CrowdTask} \nter{taskDef}}
+        \orStm{\sttsp{class} \nter{classDef}}
+    \stm{taskDef}{(\ntersp{constraintDef} \ORsp \ntersp{HpartDef} \ORsp \nter{funcDecl})\gstar}
 
     \emptyStm
-    \stm{taskUnit}{\stt{CrowdTask} \ter{Ident} \stt{\leftBrace} \nter{main} \stt{\rightBrace}}
-    \stm{main}{\rep{\nter{taskinfo}} \rep{\nter{taskUnit}}}
-    \stm{taskinfo}{\nter{constraints} \OR \nter{hyperPart} \OR \nter{execute}}
-    \stm{constraints}{\stt{Constraints} \stt{:} \stt{\leftBrace} \nter{cMain} \stt{\rightBrace}}
-    \stm{cMain}{\rep{\nter{constDim}}}
-    \stm{constDim}{\nter{temporal} \OR \nter{spatial} \OR \nter{precedence}} 
-        \orStm{\nter{repeat} \OR \nter{priority}}
-    \stm{temporal}{\stt{Temporal} \stt{:} \stt{[} {\nter{timeType}} \stt{]}}
-    \stm{timeType}{\gup{{\nter{timeValue} \OR \nter{tempSugar}}} }
-        \orStm{\gup{{\nter{timeValue} \OR \nter{tempSugar}}} \rep{\stt{,} \nter{timeType}} }
-    \stm{timeValue}{\stt{Interval} \ter{TimeLiteral} \ter{TimeLiteral}}
-        \orStm{\stt{Point} \ter{TimeLiteral}}
-    \stm{timeSugar}{\ter{TimeLiteral}}
-        \orStm{\ter{TimeLiteral} \stt{-} \ter{TimeLiteral}}
-    \stm{spatial}{\stt{Spatial} \stt{:} \stt{[} \nter{spatialType}\stt{]}}
-    \stm{spatialType}{\gup{\nter{spatialValue} \OR \nter{spatialSugar}}}
-        \orStm{\gup{\nter{spatialValue} \OR \nter{spatialSugar}} \rep{\stt{,} \nter{spatialType}}}
-    \stm{spatialValue}{\stt{PointLocation} \ter{Coord}}
-        \orStm{\stt{Line} \stt{[} \nter{lineVal} \stt{]}}
-        \orStm{\stt{Polyon} \stt{[} \nter{polyVal} \stt{]}}
-    \stm{lineVal}{\ter{Coord} \stt{,} \ter{Coord} \rep{\stt{,} \ter{Coord}}}
-    \stm{polyVal}{\ter{Coord} \stt{,} \ter{Coord} \stt{,} \ter{Coord} \rep{\stt{,} \ter{Coord}}}
-    \stm{spatialSugar}{\ter{Coord}}
-        \orStm{\ter{Coord} \stt{-} \ter{Coord}}
-    \stm{precedence}{\stt{Precedence} \stt{:} \stt{[} \nter{precVal}\stt{]}}
-    \stm{precVal}{\nter{taskPrec}\rep{\stt{,} \nter{taskPrec}}}
-    \stm{taskPrec}{\ter{Ident} \stt{->} \ter{Ident} \rep{\stt{->} \ter{Ident}}}
-    \stm{repeat}{\stt{Repeat} \stt{:} \stt{[} \nter{repeatType}\stt{]}}
-    \stm{repeatType}{\ter{IntConst} \OR \stt{INF}}
-        \orStm{\nter{dateType} \nter{listGen}}
-    \stm{dateType}{\stt{Day} \OR \stt{Month} \OR \stt{Year}}
-    \stm{priority}{\stt{Priority} \stt{:} \ter{IntConst}}
-    \stm{hyperPart}{\stt{Hparticipant} \stt{:} \stt{[} \nter{hPartValue}\stt{]}}
-    \stm{hPartValue}{\opt{\stt{every}} \ter{Ident}}
-        \orStm{\gup{\opt{\stt{every}} \ter{Ident}} \rep{\stt{,} \nter{hPartValue}}}
-    \stm{execute}{\stt{Execute} \stt{:} \stt{\leftBrace} \nter{subLang}\stt{\rightBrace}}
+    \stm{constraintDef}{\sttsp{Constraints} \sttsp{:} \tersp{NEWLINE} \tersp{INDENT} \nter{cDim}\gplus \gsp \ter{DEDENT}}
+    \stm{cDim}{\ntersp{constraintDim} \sttsp{:} \nter{cSuite}}
+    \stm{cSuite}{\gup{\ntersp{cStmt} \ORsp \tersp{NEWLINE} \tersp{INDENT} \nter{cStmt}\gplus \gsp \ter{DEDENT} } }
+    \stm{constraintDim}{\sttsp{Temporal} \ORsp \sttsp{Spatial} \ORsp \sttsp{Precedence} \ORsp \sttsp{Date} }
+        \orStm{\stt{Priority}}
+    \stm{cStmt}{\ntersp{expression} (\stt{;})\gwild \gsp \ter{NEWLINE}}
+
+    \stm{expression}{\ntersp{primary}}
+        \orStm{\ntersp{expression} \bopsp{\stt{.} } \gup{\tersp{Identifier} \ORsp \nter{callOrCreate}}}
+        \orStm{\ntersp{expression} \sttsp{[} \ntersp{expression} \stt{]}}
+        \orStm{\ntersp{callOrCreate}}
+        \orStm{\ntersp{expression} \bopsp{\gup{\sttsp{*} \ORsp \sttsp{/} \ORsp \stt{\%}}} \nter{expression}}
+        \orStm{\ntersp{expression} \bopsp{\gup{\sttsp{+} \ORsp \stt{-}}} \nter{expression}}
+        \orStm{\assocRightsp \tersp{Identifier} \bopsp{\stt{->}} \ter{Identifier}}
+    \stm{primary}{\sttsp{(} \gup{\nter{listComp}}\gwild \gsp \sttsp{)}}
+        \orStm{\sttsp{[} \gup{\nter{listComp}}\gwild \gsp \sttsp{]}}
+        \orStm{\ter{Identifier}}
+        \orStm{\nter{literal}}
+    \stm{listComp}{\ntersp{expression} (\sttsp{,} \nter{expression})\gstar \gsp (\stt{,})\gwild}
+    \stm{literal}{\nter{integerLiteral} }
+        \orStm{\stt{INF}}
+        \orStm{\nter{floatLiteral} }
+        \orStm{\ter{TimeLiteral} }
+        \orStm{\ter{DateLiteral}}
+    \stm{integerLiteral}{\gup{\tersp{DecimalLiteral} \ORsp \tersp{HexLiteral} \ORsp \ter{OctLiteral}}}
+    \stm{floatLiteral}{\gup{\tersp{FloatLiteral} \ORsp \ter{HexFloatLiteral}}}
+    \stm{callOrCreate}{\tersp{Identifier} (\sttsp{(} \nter{expressionList}\gwild\gsp \stt{)})\gwild}
+    \stm{expressionList}{\ntersp{expression} (\sttsp{,} \nter{expression})\gstar}
+
+    \emptyStm
+    \stm{HpartDef}{\sttsp{Hparticipant} \sttsp{:} \nter{hSuite}}
+    \stm{hSuite}{\tersp{NEWLINE} \tersp{INDENT} \nter{abilityDecl}\gplus \ter{DEDENT}}
+    \stm{abilityDecl}{(\stt{nullable})\gwild\gsp \nter{callOrCreate}}
+
+    \emptyStm
+    \stm{classDef}{\tersp{Identifier} \ntersp{classParamClauses} \nter{classBody}}
+    \stm{classParamClauses}{(\sttsp{(} \ntersp{classParams} \stt{)})\gstar}
+    \stm{classParams}{\ntersp{classParam} (\sttsp{,} \nter{classParam})\gstar}
+    \stm{classParam}{(\sttsp{val} \ORsp \stt{var})\gwild\gsp \tersp{Identifier} \sttsp{:} \tersp{Identifier} (\sttsp{=} \nter{expression})\gwild}
+    \stm{classBody}{\sttsp{\leftBrace} \nter{classBodyDecl}\gplus\gsp \stt{\rightBrace}}
+    \stm{classBodyDecl}{(\ntersp{filedDecl} \ORsp \nter{methodDecl})}
+    \stm{filedDecl}{\sttsp{var} \tersp{Identifier} \sttsp{:} \tersp{Identifier} (\sttsp{=} \nter{expression})\gwild}
+    \stm{methodDecl}{\sttsp{def} \nter{procedure}}
+    \stm{procedure}{\ntersp{signature} (\sttsp{:} \ter{Identifier})\gwild\gsp \sttsp{=} \nter{procBody}}
+    \stm{procBody}{(\ntersp{expression} \ORsp \nter{block})}
+    \stm{block}{\sttsp{\leftBrace} \nter{blockStm}\gstar\gsp \stt{\rightBrace}}
+    \stm{signature}{\tersp{Identifier} (\sttsp{(} \nter{params}\gwild\gsp \stt{)})\gstar}
+    \stm{params}{\ntersp{param} (\sttsp{,} \nter{param})\gstar}
+    \stm{param}{\tersp{Identifier} (\sttsp{:} \ter{Identifier})\gwild\gsp (\stt{=} \nter{expression})\gwild}
+    \stm{blockStm}{\ntersp{localVarDecl} \ter{NEWLINE}}
+        \orStm{\ntersp{statement} \ter{NEWLINE}}
+    \stm{localVarDecl}{\sttsp{var} \tersp{Identifier} (\sttsp{=} \nter{expression})\gwild}
+    \stm{statement}{block}
+        \orStm{\sttsp{if} \sttsp{(} \ntersp{expression} \sttsp{)}\ntersp{statement} (\sttsp{else} \nter{statement})\gwild}
+        \orStm{\sttsp{break} \tersp{NEWLINE}}
+        \orStm{\sttsp{continue} \tersp{NEWLINE}}
+        \orStm{\ntersp{expression} \tersp{NEWLINE}}
+
+    \emptyStm
+    \stm{funcDecl}{\sttsp{compute} \nter{procedure}}
 \end{grammar}
 
 \section{Terminator Characteristics}
@@ -89,10 +108,24 @@ And these things are not legal.
         24:00 \\
     \end{tabular}
 \end{center}
+\begin{grammar}
+    \stm{TimeLiteral}{\lext{[0-2][0-9]':'[0-6][0-9]}}
+\end{grammar}
 
 \subsection{DateLiteral}\label{DateLiteral}
+The date literal uses the form yyyy/mm/dd to represent a date, as shown in xx, with the following lexicon.
+\begin{center}
+    \begin{tabular}{c}
+        2023/02/24 \\
+        1999/03/30
+    \end{tabular}
+\end{center}
 
-\subsection{CoordLiteral} \label{CoordLiteral}
+\begin{grammar}
+    \stm{DateLiteral}{[0-9][0-9][0-9][0-9]'/'[0-1][0-9]'/'[0-3][0-9]}
+\end{grammar}
+
+\subsection{Coord} \label{Coord}
 Coordinate uses WGS coordinates to represent a physical location, and wgs coordinates are classified as a \hyperref[FloatConst]{FloatConst}.
 \begin{grammar}
     \stm{CoordLiteral}{\sttsp{(}  \stt{,} [+|-]\ter{FloatConst} \stt{)}}
@@ -101,23 +134,25 @@ Coordinate uses WGS coordinates to represent a physical location, and wgs coordi
 For instance, the \textbf{Coord}$(108.911, 34.153)$ represent the location of  xi'an, China in WGS.
 
 \subsection{Numeric Literals}\label{FloatConst}\label{IntConst}
+\subsubsection{Integer Literal}
 \begin{grammar}
-    \stm{decimal}{\nter{digit}\rep{\nter{digit}}}
-    \stm{octal}{\nter{octit} \rep{\nter{octit}}}
-    \stm{hexadecimal}{\nter{hexit} \rep{\nter{hexit}}}
-    \stm{digit}{0 | 1 | \dots | 9}
-    \stm{octit}{0|1|\dots|7}
-    \stm{hexit}{\nter{digit} | A | \dots | F|a|\dots|f}
-    \\
-    \stm{FloatConst}{\nter{decimal}\stt{.}\nter{decimal}\opt{\nter{exponent}} }
-        \orStm{\nter{decimal}\nter{exponent}}
-    \stm{exponent}{(e|E)[+|-]\nter{decimal}}
-    \\
-    \stm{IntConst}{\nter{decimal}}
-        \orStm{\stt{0o} \nter{octal} \OR \stt{0O} \nter{octal}}
-        \orStm{\stt{0x} \nter{hexadecimal} \OR \stt{0X}\nter{hexadecimal}}
+    \stm{DecimalLiteral}{(\sttsp{0} \ORsp \texttt{[1-9]} (\nter{Digits})\gwild\gsp \ORsp \stt{\_}\gplus\gsp \nter{Digits})} \label{DecimalLiteral}
+    \fragment{Digits}{\lext{[0-9] ([0-9\_]* [0-9])?}}
+    \stm{HexLiteral}{\sttsp{0} \lext{[xX] [0-9a-fA-F] ([0-9a-fA-F\_]* [0-9a-fA-F])?}}\label{HexLiteral}
+    \stm{OctLiteral}{\sttsp{0} \stt{\_}\gstar\gsp \lext{[0-7] ([0-7\_]* [0-7])?}}\label{OctLiteral}
+\end{grammar}
+\subsubsection{Float Literal}
+\begin{grammar}
+    \stm{FloatLiteral}{(\ntersp{Digits} \sttsp{.} \ntersp{Digits} \ORsp \sttsp{.} \nter{Digits})\gsp \nter{ExponetPart}\gwild\gsp \lext{[fFdD]?}}
+        \orStm{\ntersp{Digits} (\ntersp{ExponetPart} \lext{[fFdD]? | [fFdD]})} \label{FloatLiteral}
+    \fragment{ExponetPart}{\lext{[eE] [+-]? } Digits}
+    \stm{HexFloatLiteral}{\ntersp{Prefix} (\ntersp{HDigits} \stt{.}\gwild\gsp \ORsp \nter{HDigits}\gwild\gsp \sttsp{.} \nter{HDigits})\gsp \nter{HexEPart}} \label{HexFloatLiteral}
+    \stm{Prefix}{\sttsp{0} \lext{[xX]}}
+    \stm{HexEPart}{\lext{[pP] [+-]? } \ntersp{Digits} \lext{[fFdD]?}}
 \end{grammar}
 
+
 \subsection{Indent Related}\label{NEWLINE}\label{INDENT}\label{DEDENT}
+In CTL, part of the syntax uses indentation to divide blocks of code. The details are handled in the grammar analysis.
 
 
