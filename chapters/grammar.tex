@@ -155,6 +155,8 @@ For instance, the \textbf{Coord}$(108.911, 34.153)$ represent the location of  x
         \orStm{\ntersp{Digits} (\ntersp{ExponetPart} \lext{[fFdD]? | [fFdD]})} \label{FloatLiteral}
     \fragment{ExponetPart}{\lext{[eE] [+-]? } Digits}
     \stm{HexFloatLiteral}{\ntersp{Prefix} (\ntersp{HDigits} \stt{.}\gwild\gsp \ORsp \nter{HDigits}\gwild\gsp \sttsp{.} \nter{HDigits})\gsp \nter{HexEPart}} \label{HexFloatLiteral}
+    \fragment{HDigits}{\ntersp{HDigit} ((\ntersp{HDigit} \ORsp \stt{\_})\gstar\gsp \nter{HDigit})\gwild}
+    \fragment{HDigit}{\lext{[0-9a-fA-F]}}
     \stm{Prefix}{\sttsp{0} \lext{[xX]}}
     \stm{HexEPart}{\lext{[pP] [+-]? } \ntersp{Digits} \lext{[fFdD]?}}
 \end{grammar}
