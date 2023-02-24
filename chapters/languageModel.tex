@@ -1,8 +1,9 @@
 \chapter{Language Model}
 The CTDL language model is divided into two parts: the sensing model and the computing model. Mathematical theory of language in chapter \ref{chapter:SenseTuringMachine}.
 \section{Sensing Model}
+The CTL sensing model describes the data collection process using Task Constraints and Hyper Participant. The mathematical theory behind the sensing model is the sensing capability of the sensing Turing machine, see Chapter \ref{chapter:SenseTuringMachine}.
 
-\subsection{Task Constrains}
+\subsection{Task Constraint}
 Task constraints are constraints that describe a crowd task itself, e.g., time constraints, spatial constraints, and dependence constraints. The task constraints are not directly related to the participants performing the task, but can directly affect the task scheduling of the system. Listing \ref{Code:Constraints} shows a complete code snippet of the constraint definition.
 
 \lstinputlisting[caption={CTL Constraints Part Snippet}, label=Code:Constraints, language=ctl]{./snippet/Constraints/Constraints.ctl_snippet}
@@ -79,39 +80,6 @@ Instances of different constraint types can be combined under the same constrain
 
 \lstinputlisting[caption={Combination Constraint Type Snippet}, label=Code:Combination, language=ctl]{./snippet/Constraints/Combination.ctl_snippet}
 
-\subsubsection{Grammar}
-The grammar of task constraints is as following:
-\begin{grammar}
-    \stm{constraintDef}{\sttsp{Constraints} \sttsp{:} \tersp{NEWLINE} \tersp{INDENT} \nter{cDim}\gplus \gsp \ter{DEDENT}}
-    \stm{cDim}{\ntersp{constraintDim} \sttsp{:} \nter{cSuite}}
-    \stm{cSuite}{\gup{\ntersp{cStmt} \ORsp \tersp{NEWLINE} \tersp{INDENT} \nter{cStmt}\gplus \gsp \ter{DEDENT} } }
-    \stm{constraintDim}{\sttsp{Temporal} \ORsp \sttsp{Spatial} \ORsp \sttsp{Precedence} \ORsp \sttsp{Date} }
-        \orStm{\stt{Priority}}
-    \stm{cStmt}{\ntersp{expression} (\stt{;})\gwild \gsp \ter{NEWLINE}}
-
-    \stm{expression}{\ntersp{primary}}
-        \orStm{\ntersp{expression} \bopsp{\stt{.} } \gup{\tersp{Identifier} \ORsp \nter{callOrCreate}}}
-        \orStm{\ntersp{expression} \sttsp{[} \ntersp{expression} \stt{]}}
-        \orStm{\ntersp{callOrCreate}}
-        \orStm{\ntersp{expression} \bopsp{\gup{\sttsp{*} \ORsp \sttsp{/} \ORsp \stt{\%}}} \nter{expression}}
-        \orStm{\ntersp{expression} \bopsp{\gup{\sttsp{+} \ORsp \stt{-}}} \nter{expression}}
-        \orStm{\assocRightsp \tersp{Identifier} \bopsp{\stt{->}} \ter{Identifier}}
-    \stm{primary}{\sttsp{(} \gup{\nter{listComp}}\gwild \gsp \sttsp{)}}
-        \orStm{\sttsp{[} \gup{\nter{listComp}}\gwild \gsp \sttsp{]}}
-        \orStm{\ter{Identifier}}
-        \orStm{\nter{literal}}
-    \stm{listComp}{\ntersp{expression} (\sttsp{,} \nter{expression})\gstar \gsp (\stt{,})\gwild}
-    \stm{literal}{\nter{integerLiteral} }
-        \orStm{\stt{INF}}
-        \orStm{\nter{floatLiteral} }
-        \orStm{\ter{TimeLiteral} }
-        \orStm{\ter{DateLiteral}}
-    \stm{integerLiteral}{\gup{\tersp{DecimalLiteral} \ORsp \tersp{HexLiteral} \ORsp \ter{OctLiteral}}}
-    \stm{floatLiteral}{\gup{\tersp{FloatLiteral} \ORsp \ter{HexFloatLiteral}}}
-    \stm{callOrCreate}{\tersp{Identifier} (\sttsp{(} \nter{expressionList}\gwild\gsp \stt{)})\gwild}
-    \stm{expressionList}{\ntersp{expression} (\sttsp{,} \nter{expression})\gstar}
-
-\end{grammar}
 
 \subsection{Hyper Participant}
 Crowd Intelligence tasks can and can only be completed by numerous participants, and the task requires many capabilities from the participants, such as some perceptual capability or some computational capability, or even some intelligence.
@@ -192,18 +160,178 @@ The CTL computation part receives a data tuple in two possible cases, as shown i
     \texttt{(Location, None, Image)}
 \end{equation}
 
-\subsubsection{Grammar}
-The grammar of HParticipant is as following:
-
+\subsection{Grammar}
+The grammar of Task Constraints is as following:
 \begin{grammar}
-    \stm{Hparticipant}{\sttsp{Hparticipant} \sttsp{:} \nter{hSuite}}
+    \stm{constraintDef}{\sttsp{Constraints} \sttsp{:} \tersp{NEWLINE} \tersp{INDENT} \nter{cDim}\gplus \gsp \ter{DEDENT}}
+    \stm{cDim}{\ntersp{constraintDim} \sttsp{:} \nter{cSuite}}
+    \stm{cSuite}{\gup{\ntersp{cStmt} \ORsp \tersp{NEWLINE} \tersp{INDENT} \nter{cStmt}\gplus \gsp \ter{DEDENT} } }
+    \stm{constraintDim}{\sttsp{Temporal} \ORsp \sttsp{Spatial} \ORsp \sttsp{Precedence} \ORsp \sttsp{Date} }
+        \orStm{\stt{Priority}}
+    \stm{cStmt}{\ntersp{expression} (\stt{;})\gwild \gsp \ter{NEWLINE}}
+
+    \stm{expression}{\ntersp{primary}}
+        \orStm{\ntersp{expression} \bopsp{\stt{.} } \gup{\tersp{Identifier} \ORsp \nter{callOrCreate}}}
+        \orStm{\ntersp{expression} \sttsp{[} \ntersp{expression} \stt{]}}
+        \orStm{\ntersp{callOrCreate}}
+        \orStm{\ntersp{expression} \bopsp{\gup{\sttsp{*} \ORsp \sttsp{/} \ORsp \stt{\%}}} \nter{expression}}
+        \orStm{\ntersp{expression} \bopsp{\gup{\sttsp{+} \ORsp \stt{-}}} \nter{expression}}
+        \orStm{\assocRightsp \tersp{Identifier} \bopsp{\stt{->}} \ter{Identifier}}
+    \stm{primary}{\sttsp{(} \gup{\nter{listComp}}\gwild \gsp \sttsp{)}}
+        \orStm{\sttsp{[} \gup{\nter{listComp}}\gwild \gsp \sttsp{]}}
+        \orStm{\ter{Identifier}}
+        \orStm{\nter{literal}}
+    \stm{listComp}{\ntersp{expression} (\sttsp{,} \nter{expression})\gstar \gsp (\stt{,})\gwild}
+    \stm{literal}{\nter{integerLiteral} }
+        \orStm{\stt{INF}}
+        \orStm{\nter{floatLiteral} }
+        \orStm{\ter{TimeLiteral} }
+        \orStm{\ter{DateLiteral}}
+    \stm{integerLiteral}{\gup{\tersp{DecimalLiteral} \ORsp \tersp{HexLiteral} \ORsp \ter{OctLiteral}}}
+    \stm{floatLiteral}{\gup{\tersp{FloatLiteral} \ORsp \ter{HexFloatLiteral}}}
+    \stm{callOrCreate}{\tersp{Identifier} (\sttsp{(} \nter{expressionList}\gwild\gsp \stt{)})\gwild}
+    \stm{expressionList}{\ntersp{expression} (\sttsp{,} \nter{expression})\gstar}
+
+    \emptyStm
+    \stm{HpartDef}{\sttsp{Hparticipant} \sttsp{:} \nter{hSuite}}
     \stm{hSuite}{\tersp{NEWLINE} \tersp{INDENT} \nter{abilityDecl}\gplus \ter{DEDENT}}
     \stm{abilityDecl}{(\stt{nullable})\gwild\gsp \nter{callOrCreate}}
+
+\end{grammar}
+
+\section{Computing Model}
+
+CTL's computational model is a high-level programming language that incorporates object-oriented and functional programming.
+
+\subsection{Basic}
+The characteristics underlying the CTL computational model are as follows.
+\subsubsection{Expressions}
+Expressions are computable statement:
+\begin{lstlisting}[numbers=none, xleftmargin=0.05\linewidth]
+1 + 1
+\end{lstlisting}
+You can output the results of expressions using \texttt{CrowdOS.println}:
+\begin{lstlisting}[numbers=none, xleftmargin=0.05\linewidth]
+CrowdOS.println(1)  # 1
+CrowdOS.println(1 + 1)  # 2
+CrowdOS.println("Hello!")  # Hello!
+CrowdOS.println("Hello," + " world!")  # Hello, world!   
+\end{lstlisting}
+
+\subsubsection{Variable}
+You can define a variable with the \texttt{var} keyword, and you can re-assign them.
+\begin{lstlisting}[numbers=none, xleftmargin=0.05\linewidth]
+var x = 1 + 1
+x = 3
+CrowdOS.println(x * x)  # 9
+\end{lstlisting}
+As with values, the type of variable can be omitted and inferred, or it can be explicitly stated:
+\begin{lstlisting}[numbers=none, xleftmargin=0.05\linewidth]
+var x: Int = 1 + 1
+\end{lstlisting}
+
+\subsubsection{Blocks}
+You can combine expressions by surrounding them with \texttt{\{\}}. We call this a block.
+The result of the last expression in the block is the result of the overall block, too:
+\begin{lstlisting}[numbers=none, xleftmargin=0.05\linewidth]
+CrowdOS.println({
+  val x = 1 + 1
+  x + 1
+}) // 3
+\end{lstlisting}
+
+\subsubsection{Function}
+Function are defined with the \texttt{compute} keyword. \texttt{compute} is followed by a name, parameter list(s), a return type, and a body:
+\begin{lstlisting}[numbers=none, xleftmargin=0.05\linewidth]
+compute add(x: Int, y: Int): Int = x + y
+CrowdOS.println(add(1, 2)) // 3
+\end{lstlisting}
+A Function can take multiple parameter lists:
+\begin{lstlisting}[numbers=none, xleftmargin=0.05\linewidth, xrightmargin=0pt]
+compute addThenMultiply(x: Int, y: Int)(multiplier: Int): Int 
+    = (x + y) * multiplier
+CrowdOS.println(addThenMultiply(1, 2)(3)) // 9
+\end{lstlisting}
+Or no parameter lists at all:
+\begin{lstlisting}[numbers=none, xleftmargin=0.05\linewidth]
+compute name: String = CrowdOS.getProperty("host")
+CrowdOS.println("Hello, " + name + "!")
+\end{lstlisting}
+Methods can have multi-line expressions as well:
+\begin{lstlisting}[numbers=none, xleftmargin=0.05\linewidth]
+def getSquareString(input: Double): String = {
+  var square = input * input
+  square.toString
+}
+CrowdOS.println(getSquareString(2.5)) // 6.25
+\end{lstlisting}
+
+\subsubsection{Classes}
+You can define classes with the class keyword, followed by its name and constructor parameters:
+\begin{lstlisting}[numbers=none, xleftmargin=0.05\linewidth]
+class Greeter(prefix: String, suffix: String) {
+  def greet(name: String): Void =
+    CrowdOS.println(prefix + name + suffix)
+}
+\end{lstlisting}
+In class you can use \texttt{def} keyword to define a method. The other feature of method is same to function.
+You can use the class name followed parameters list to create an instance:
+\begin{lstlisting}[numbers=none, xleftmargin=0.05\linewidth]
+var greeter = Greeter("Hello, ", "!")
+greeter.greet("CTL developer") // Hello, CTL developer!
+\end{lstlisting}
+
+\subsection{Data Transfer}
+
+The purpose of the CTL computational model is to compute the data passed from the sensing model. The data is passed through a special object {Hpart}, and in the function, the for data can be obtained using {Hpart.dataName}, where the data name is the same name as the ability in the Hparticipant. For example, when the Hparticipant is declared as listing \ref*{Code:DataTransfer}, the following operation gets the data of interest.
+
+\lstinputlisting[caption={Data Transfer Snippet}, label=Code:DataTransfer, language=ctl]{./snippet/Compute/DataTransfer.ctl}
+
+For each returned capability in Hparticipant, there is a property with the same name in the Hpart object. In addition, Hpart provides some inspection capabilities, for example, for line 13 in listing \ref{Code:DataTransfer}, Hpart.pid returns a list of real participants who have contributed to that data.
+
+\subsection{Grammar}
+The grammar of class and Function are as follow:
+\begin{grammar}
+    \stm{topDef}{\sttsp{class} \nter{classDef}}
+    \stm{classDef}{\tersp{Identifier} \ntersp{classParamClauses} \nter{classBody}}
+    \stm{classParamClauses}{(\sttsp{(} \ntersp{classParams} \stt{)})\gstar}
+    \stm{classParams}{\ntersp{classParam} (\sttsp{,} \nter{classParam})\gstar}
+    \stm{classParam}{(\sttsp{val} \ORsp \stt{var})\gwild\gsp \tersp{Identifier} \sttsp{:} \tersp{Identifier} (\sttsp{=} \nter{expression})\gwild}
+    \stm{classBody}{\sttsp{\leftBrace} \nter{classBodyDecl}\gplus\gsp \stt{\rightBrace}}
+    \stm{classBodyDecl}{(\ntersp{filedDecl} \ORsp \nter{methodDecl})}
+    \stm{filedDecl}{\sttsp{var} \tersp{Identifier} \sttsp{:} \tersp{Identifier} (\sttsp{=} \nter{expression})\gwild}
+    \stm{methodDecl}{\sttsp{def} \nter{procedure}}
+    \stm{procedure}{\ntersp{signature} (\sttsp{:} \ter{Identifier})\gwild\gsp \sttsp{=} \nter{procBody}}
+    \stm{procBody}{(\ntersp{expression} \ORsp \nter{block})}
+    \stm{block}{\sttsp{\leftBrace} \nter{blockStm}\gstar\gsp \stt{\rightBrace}}
+    \stm{signature}{\tersp{Identifier} (\sttsp{(} \nter{params}\gwild\gsp \stt{)})\gstar}
+    \stm{params}{\ntersp{param} (\sttsp{,} \nter{param})\gstar}
+    \stm{param}{\tersp{Identifier} (\sttsp{:} \ter{Identifier})\gwild\gsp (\stt{=} \nter{expression})\gwild}
+    \stm{blockStm}{\ntersp{localVarDecl} \ter{NEWLINE}}
+        \orStm{\ntersp{statement} \ter{NEWLINE}}
+    \stm{localVarDecl}{\sttsp{var} \tersp{Identifier} (\sttsp{=} \ter{expression})\gwild}
+    \stm{statement}{block}
+        \orStm{\sttsp{if} \sttsp{(} \ntersp{expression} \sttsp{)}\ntersp{statement} (\sttsp{else} \nter{statement})\gwild}
+        \orStm{\sttsp{break} \tersp{NEWLINE}}
+        \orStm{\sttsp{continue} \tersp{NEWLINE}}
+        \orStm{\ntersp{expression} \tersp{NEWLINE}}
+
+    \emptyStm
+    \stm{funcDecl}{\sttsp{compute} \nter{procedure}}
+\end{grammar}
+
+\section{CTL file}
+A CTL file consists of multiple CrowdTasks and Classes. A CrowdTask consists of Constraints, Hparticipant and functions used for computation. As shown in listing \ref{Code:CTLFile}.
+
+% exp4-SmartCities\CTDL\BrokenStreetlight.CTDL
+\lstinputlisting[caption={CTL file}, label=Code:CTLFile, language=ctl]{../experiment/exp4-SmartCities/CTDL/BrokenStreetlight.CTDL}
+
+The grammar of CTL file are as following:
+\begin{grammar}
+    \stm{ctlFile}{(\nter{topDef})\gstar}
+    \stm{topDef}{\sttsp{CrowdTask} \nter{taskDef}}
+        \orStm{\sttsp{class} \nter{classDef}}
+    \stm{taskDef}{(\ntersp{constraintDef} \ORsp \ntersp{HpartDef} \ORsp \nter{funcDecl})\gstar}
 \end{grammar}
 
 
-\section{Computing Model}
-\subsection{Basic}
-\subsubsection{Expressions}
-Expressions are computable statement:
-1 + 1
