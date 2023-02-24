@@ -22,8 +22,16 @@ The notation of CTDL is a mixture of \href{https://en.wikipedia.org/wiki/Extende
         \orStm{\ntersp{expression} \bopsp{\stt{.} } \gup{\tersp{Identifier} \ORsp \nter{callOrCreate}}}
         \orStm{\ntersp{expression} \sttsp{[} \ntersp{expression} \stt{]}}
         \orStm{\ntersp{callOrCreate}}
+        \orStm{\prefixsp{(\sttsp{+} \ORsp \stt{-})} \nter{expression}}
         \orStm{\ntersp{expression} \bopsp{\gup{\sttsp{*} \ORsp \sttsp{/} \ORsp \stt{\%}}} \nter{expression}}
         \orStm{\ntersp{expression} \bopsp{\gup{\sttsp{+} \ORsp \stt{-}}} \nter{expression}}
+        \orStm{\ntersp{expression} \bopsp{(\sttsp{<=} \ORsp \sttsp{>=} \ORsp \sttsp{<} \ORsp \stt{<})} \nter{expression}}
+        \orStm{\ntersp{expression} \bopsp{(\sttsp{==} \ORsp \stt{!=})} \nter{expression}}
+        \orStm{\ntersp{expression} \bopsp{\stt{\&\&}} \nter{expression}} 
+        \orStm{\ntersp{expression} \bopsp{\stt{||}} \nter{expression}} 
+        \orStm{\assocRightsp \ntersp{expression} \bopsp{\stt{?}} \ntersp{expression} \sttsp{:} \nter{expression}}
+        \orStm{\assocRightsp \ntersp{expression} \bopsp{(\sttsp{=} \ORsp \sttsp{+=} \ORsp \stt{-=})} \nter{expression}}
+
         \orStm{\assocRightsp \tersp{Identifier} \bopsp{\stt{->}} \ter{Identifier}}
     \stm{primary}{\sttsp{(} \gup{\nter{listComp}}\gwild \gsp \sttsp{)}}
         \orStm{\sttsp{[} \gup{\nter{listComp}}\gwild \gsp \sttsp{]}}
