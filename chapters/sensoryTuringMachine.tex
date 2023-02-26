@@ -1,0 +1,237 @@
+\chapter{Sensory Turing Machine}\label{chapter:SenseTuringMachine}
+
+The theory behind the CTL language is sensory Turing machine theory. Sensory Turing machines belong to a theory of automata. This chapter first briefly introduces other theories in automata theory, then describes the mathematical model of sensory Turing machines in detail, and finally does some important proof work based on sensory Turing machine theory.
+\section{Automata Theory}
+In this section, we present each theory in classical automata theory in turn, from simple to complex, with the emphasis on reflecting, in as uniform a mathematical form as possible, how the latter theory improves in power compared to the former one. Eventually, the place of sensory Turing machines in the overall theory of automata is given, and the details of the mathematical model are discussed in the next section.
+\subsection{Combinational Logic}
+In automata theory, combinational logic is a type of digital logic which is implemented by Boolean circuits, where the output is a pure function of the present input only.
+
+The mathematical form of combinatorial logic is a binary group (eq. \ref{math:combinationalLogic}).
+\begin{equation} \label{math:combinationalLogic}
+    (\Sigma, \delta)
+\end{equation}
+where
+\begin{itemize}
+    \item $\Sigma = {1, 0}$ is the input alphabet. 0 and 1 means true and false.
+    \item $\delta: \Sigma \to \Sigma$ is pure function.
+\end{itemize}
+
+\subsection{Finite-state Machine}
+Finite-state machine is an abstract machine that can be in exactly one of a finite number of states at any given time.
+
+The mathematical form of Finite-state machine is a five tuple (eq. \ref{math:finiteStateMachine})
+\begin{equation}\label{math:finiteStateMachine}
+    (Q, \Sigma, q_0, \delta, F)
+\end{equation}
+where
+\begin{itemize}
+    \item $Q$ is a finite set of states.
+    \item $\Sigma$ is a finite set of input alphabets.
+    \item $\delta: Q \times \Sigma \to Q$ is the transfer function.
+    \item $q_0$ is the initial state, $q_0\in Q$ or $q_0\subset Q$
+    \item $F \subset Q$ is the set of final states.
+\end{itemize}
+
+\subsection{Push-down Automaton}
+A pushdown automaton (PDA) is a type of automaton that employs a stack.
+
+
+The mathematical form of pushdown automaton is a six tuple  (eq. \ref{math:pushdownAutomation})
+\begin{equation} \label{math:pushdownAutomation}
+    (Q, \Sigma, \Gamma, \delta, q_0, F)
+\end{equation}
+where
+\begin{itemize}
+    \item $Q$ is a finite set of states.
+    \item $\Sigma$ is a finite set of input alphabets.
+    \item $\Gamma$ is a finite set of stack alphabets.
+    \item $\delta: Q \times \Gamma_\epsilon \times \Sigma_\epsilon \to  \mathcal{P}(Q \times \Gamma_\epsilon)$ is the transfer function
+    \item $q_0$ is the initial state, $q_0\in Q$ or $q_0\subset Q$
+    \item $F \subset Q$ is the set of final states.
+\end{itemize}
+
+\subsection{Turing Machine}
+A Turing machine is a mathematical model of computation describing an abstract machine that manipulates symbols on a strip of tape according to a table of rules.
+
+The mathematical form of Turing machine is a six tuple  (eq. \ref{math:TuringMachine})
+\begin{equation}\label{math:TuringMachine}
+    (Q, \Sigma, \Gamma, \delta, q_0, F)
+\end{equation}
+where
+\begin{itemize}
+    \item $Q$ is a finite set of states.
+    \item $\Sigma$ is a finite set of input alphabets.
+    \item $\Gamma$ is a finite set of stack alphabets.
+    \item $\delta: Q \times \Gamma \to (Q \cup F) \times \Gamma \times \{R, L, -\}$
+    \item $q_0$ is the initial state, $q_0\in Q$ or $q_0\subset Q$
+    \item $F = \{q_{accept}, q_{reject}\}$ is the set of final states.
+    \item $q_{accept} \in Q$ is the accept state,
+    \item $q_{reject} \in Q$ is the reject state.
+\end{itemize}
+
+\subsection{Sensory Turing Machine}
+
+\section{Mathematic Model}
+A sensory Turing machine is an extension of a Turing Machine that extends a multi-tape Turing Machine (actually a 2-tape Turing Machine) with the ability to perceive external objects. Its mathematical model is a six-tuple.
+\begin{equation}
+    ST(Q, \sigma, \Gamma, \delta, q_0, F)
+\end{equation}
+where
+\begin{itemize}
+    \item $Q$ is a non-empty set of infinite states, $Q$ does not contain the stop state $F$.
+    \item $\Sigma$ is a non-empty infinite input alphabet that does not contain the blank character $\Delta$.
+    \item $\Gamma$ is a non-empty infinite tape alphabet containing blank characters $\Delta$, $\Sigma \subseteq \Gamma$.
+    \item $\delta:Q\times\Gamma^2\to(Q\cup F)\times\Gamma^2\times\{P,OB\}^2\times\{L,R,S\}^2$ is the transfer function, $P$ is the sensory Turing machine printing paper tape operation with the same capability as the Turing machine, $PS(S\in\Gamma)$ means printing symbol $S$ in the square where the current read/write head is located. $OB$ is the operation of the sensory Turing machine sensing external objects, $OBS(S\in\Gamma)$ means sending symbol $S$ to the perceptible external object sends the symbol $S$. The external perceptible object prints the response symbol string on the second paper strip of the sensory Turing machine. In particular, $OB\Delta$ indicates that no operation is performed.
+    \item $q_0$ is the initial state.
+    \item $F = \{q_{accept}, q_{reject}\}$ is the set of downtime states.
+\end{itemize}
+
+The mathematical model of the perceptible object is a binary (eq. \ref{math:perceptibleObject}).
+\begin{equation}\label{math:perceptibleObject}
+    SO(\varrho,\Delta t) 
+\end{equation}
+where
+\begin{itemize}
+    \item $\varrho: \Gamma^n\to \Omega^m$ denotes the response of a perceptible object to a given input. $\varrho$ is a partially applied mapping of the mapping $\varrho^*:\Gamma^n\times \mathcal{R}\to\Omega^m$, i.e., $\varrho(s)=\varrho^* (s,\tau)$, $(\tau - 0 ) \geq \Delta t$, $\Gamma$ is an infinite tape alphabet of sensory Turing machines. $\Omega$ is an infinite symbol table.
+    \item $\Delta t \in \mathcal{R}$ is the time sensitivity of $\varrho$, $\mathcal{R}$ is the set of real number.
+\end{itemize}
+
+The mapping $\varrho^*$ has the following properties.
+\begin{align}
+    \varrho^*(s_1, t_1) & = \Delta \\
+    \varrho^*(s_2, t_2) & = \Delta \\
+              \nonumber & \vdots \\ 
+    \varrho^*(s_n, t_n) & = (\alpha_1, \alpha_2, \dots, \alpha_n)
+\end{align}
+where
+\begin{gather}
+    \alpha_i \in \Omega \\
+    s_i \in \Gamma \\
+    t_1 < t_2 < \dots < t_i < \dots < t_n \\
+    t_n - t_1 \leq \Delta t
+\end{gather}
+This property gives $\varrho$ a good property of having the following equation \ref{math:varrhoProperty} in $\Delta t$ time.
+\begin{equation}\label{math:varrhoProperty}
+    \varrho(s_1, s_2, \dots, s_n) = \sum_{i=1}^n\varrho(e_{s_i}^i) = (\alpha_1, \alpha_2, \dots, \alpha_n) \in \Omega
+\end{equation}
+where, $e_{s_i}^i$ means that the $i$th dimension of the vector is the symbol $s_i$ and all other dimensions are $\Delta$. For example, $e_{s_1}^1=(s_1,\Delta, \dots, \Delta)$, $e_{s_n}^n=(\Delta,\dots, \Delta,s_n)$.
+
+A sensory Turing machine and a perceptible object model form a sensory Turing machine dialogue model (eq. \ref{math:dialogueModel}).
+\begin{equation}\label{math:dialogueModel}
+    DIA(ST, SO)
+\end{equation}
+
+It is important to note that the mathematical form of the above sensory Turing machine and perceptible object model is not unique. For example, we can remove the dimension about time from the perceptible object model, i.e., $SO(\varrho)$. Also, add another paper tape for the sensory Turing machine as an output buffer for the $OB$ perception operation. However, such a model will lead to an overly complex sensory Turing machine, which is not conducive to our subsequent proof work.
+
+\section{Proofs}
+A sensory Turing machine is not equivalent to a Turing machine, specifically a sensory Turing machine can simulate a Turing machine, but a Turing machine cannot simulate a sensory Turing machine. The proof of inequivalence is divided into two parts, first proving that a sensory Turing machine can simulate a 2-tape Turing machine, and then proving that a Turing machine can simulate a degraded sensory Turing machine under certain qualifications.
+
+\subsection{Proof of Power}
+The idea of the power proof is to first prove that a sensory Turing machine can simulate a 2-tape Turing machine, after proving that a 2-tape Turing machine is equivalent to a general Turing machine, thus proving that a sensory Turing machine can simulate a general Turing machine.
+\begin{proof}\label{proof:Power}
+\begin{enumerate}
+    \item Given any 2-tape Turing machine $T(Q,\Sigma, \Gamma, \Delta, q_0, F)$, where 
+    \begin{equation}
+        \delta: Q \times \Gamma^2 \to (Q\cup F)\times \Gamma^2 \times \{L, R, S\}^2
+    \end{equation}
+    \item Since the 2-tape Turing machine only prints $P$ operations, $\delta$ can be rewritten as
+    \begin{equation}
+        \delta^*: Q \times \Gamma^2 \to (Q\cup F)\times \Gamma^2 \times \{P\}^2 \times \{L, R, S\}^2
+    \end{equation}
+    \item \label{proof:Psi} Let the set $\Psi$ be the set of derivatives of $\delta$.
+    \begin{align}
+        \nonumber \Psi = \{\delta^*(q_1,s_1)=(q_2, s_2, P, op) | q_1 \in Q, q_2 \in (Q\cup F), \\
+        s_1, s_2\in\Gamma, op\in\{L,R,S\}\}
+    \end{align}
+    \item For any sensory Turing machine $ST(Q_{st},\Sigma_{st},\Gamma_{st},\delta_{st},q_0,F_{st})$
+    \begin{equation}
+        \delta_{st}: Q_{st} \times \Gamma_{st}^2 \to (Q_{st}\cup F_{st})\times \Gamma_{st}^2 \times \{P, OB\}^2 \times \{L, R, S\}^2
+    \end{equation}
+    \item \label{proof:PsiSt} Let the set $\Psi_{st}$ be the set of derivatives of $\delta_{st}$.
+    \begin{align}
+        \nonumber \Psi_{st} = \{\delta_{st}(q_1,s_1)=(q_2, s_2, b, op) | q_1 \in Q_{st}, q_2 \in (Q_{st}\cup F_{st}), \\
+        b\in \{P, OB\},s_1, s_2\in\Gamma_{st}, op\in\{L,R,S\}\}
+    \end{align}
+    \item By \ref{proof:Psi} and \ref{proof:PsiSt}, then $\Psi \subset \Psi_{st}$
+    \item \label{proof:ST2T}For any Turing machine, there exists a sensory Turing machine
+    \begin{equation}
+        ST(Q,\Sigma,\Gamma,\delta,q_0,F)
+    \end{equation}
+    where
+    \begin{equation}
+        \delta \in \Psi \subset \Psi_{st}
+    \end{equation}
+    \item \label{proof:ST2Tres}From \ref{proof:ST2T}, there exists a perceptual Turing machine that can simulate any 2-tape Turing machine.
+    \item \label{proof:STT}It is known that a 2-tape Turing machine is equivalent to a 1-tape Turing machine. (ref todo)
+    \item From \ref{proof:ST2Tres} and \ref{proof:STT}, there exists a sensory Turing machine that can simulate any Turing machine.
+\end{enumerate}
+\end{proof}
+The proof \ref{proof:Power} shows that the power of the sensory Turing machine is greater than or equal to that of the Turing machine.
+
+
+\subsection{Proof of Degradation}
+Sensory Turing machines can degrade into ordinary Turing machines (variants that can be simulated by Turing machines) under certain restrictions.
+\subsubsection{Trivial Degradation} \label{proof:Trivail}
+In the proof of \ref{proof:Power}, a degradation of the sensory Turing machine has been embodied. When we restrict the operation of the sensory Turing machine as \ref{math:TrivailDegradation}, and An arrow with $d$ indicates that this is a degradation operation of the perceptual Turing machine.
+\begin{equation}\label{math:TrivailDegradation}
+    \{P, OB\} \stackrel{d}{\to} \{P\}
+\end{equation}
+At this point, for the set $\Psi$ of derivatives of $\delta$ in a 2-tape Turing machine and the set $\Psi_{st}$ of derivatives of the sensory Turing machine $\delta_{st}$ have
+\begin{equation}
+    \Psi = \Psi_{st}
+\end{equation}
+That is, a sensory Turing machine is equivalent to a 2-tape Turing machine under the condition of trivial degradation. That is, a Turing machine can simulate a sensory Turing machine with a trivial degradation.
+
+\subsubsection{Perceptible Object Degradation}
+In a sensory Turing machine dialogue model \ref{proof:DIA}.
+\begin{equation}\label{proof:DIA}
+    DIA(ST, SO)
+\end{equation}
+We do not assume any a priori knowledge of the perceptible object model; a perceptible object can be anything that can respond to an input. From this, we can propose another qualification that there exists a class of perceptible objects $SO_M (\varrho_m,\Delta t)$ which is a Turing machine $T_{so} (Q,\Sigma_{so},\Gamma,\delta,q_0,F)$, which we call a perceptible object Turing machine, where
+\begin{align}
+    &\varrho_m: \Gamma^n \to \Gamma^n \\
+    &\Sigma_{so} = \Gamma
+\end{align}
+In addition, we qualify the sensory Turing machine $ST^*$: when the sensory Turing machine performs $OB$ operations, it is printed on the paper tape of the perceptible object Turing machine instead.
+
+At this point the sensory Turing machine dialogue model degrade into two interacting Turing machines as \ref{proof:DIADegrade}.
+\begin{equation}\label{proof:DIADegrade}
+    DIA(ST, SO) \stackrel{d}{\to} DIA^*(ST^*, T_{so})
+\end{equation}
+The two Turing machines interact in the following form, first the degraded sensory Turing machine $ST^*$ reads and writes symbols on the first tape, and when a certain state transfer requires an $OBs$ operation, $ST^*$ prints character s on $T_{so}$'s paper tape. $t_{so}$ is in a circular state (circular todo) at the initial state, and its skeleton tables (\# todo ref) are as follows:
+\begin{center}
+\begin{tabular}{llll}
+    m-config. & Symbol & Operations & Final m-config. \\
+    $\mathfrak{W}$ & $\Delta$ & $S$ & $\mathfrak{W}$ \\
+    $\mathfrak{W}$ & not $\Delta$ & $op \in (\{P, OB\} \times \{L, R, S\})$ & $\mathfrak{C}$ \\
+    ... & ... & ... & ...
+\end{tabular}
+\end{center}
+$\mathfrak{W}$ is called the wait state of $T_{so}$, once $ST^*$ performs an $OB$ operation, $T_{so}$ prints the response on the second paper tape of $ST^*$.
+
+The following proof shows that the degradation sensory Turing machine dialogue model $DIA^* (ST^*,T_{so})$ can be simulated by a 2-tape Turing machine $T$. From the trivial degradation proof (\ref{proof:Trivail}) it follows that a trivial degraded perceptual Turing machine is equivalent to a Turing machine. Thus, $T$ can simulate the computational process in $ST$ that does not contain $OB$, and $T$ can also simulate $T_{so}$. Thus, it is only necessary to construct a simulation process to simulate the $OB$ operation of $ST^*$ and its interaction with $T_{so}$.
+\begin{proof}
+\begin{enumerate}
+    \item $T$ is in the $q_{st}$ state and prints the separator character $\#$ on the second tape first, and in one (or several) steps, prints the character. Eventually the separator character $\#$ is printed again.
+    \begin{equation}
+        (q_{st},x_1\underline{a_1}y_1, \underline{\Delta}) \vdash_T^* (q_{st}^\prime, x_1\underline{a_1}y_1, \#s\underline{\#})
+    \end{equation}
+    The formula uses the symbolic representation of Martin ([1] todo), where the triple represents a 2-tape Turing machine, the first component is the current state the Turing is in, and the second component represents the symbol on paper tape 1, where $x_1$,$y_1$,$s$ represents the symbol string, $a_1$,$\#$ represents the character, and $\Delta$ represents the null character. The underscore under the character indicates the position where the Turing machine read/write head is located. $\vdash$ indicates that the previous Turing machine state can be loaded with another state by a one-step operation, and $\vdash^*$ indicates by a 0-step or multi-step operation.
+    \item $T$ is transformed into $q_{so}$ state, and the read/write head of the second paper strip looks for the first $\#$ to the left, after which it enters the calculation process and loses the calculation again after the $\#$ in the format $@r@$. That is
+    \begin{equation}
+        (q_{st}^\prime,x_1\underline{a_1}y_1,\#s\underline{\#}) \vdash_T^* (q_{so}, x_1\underline{a_1}y_1, \#s\#@r\underline{@})
+    \end{equation}
+    \item $T$ is transformed into the $q_{st}^{\prime\prime}$ state, and the read/write head of the second paper strip looks for the first $@$ to the left, after which it enters the computation process straight to the encounter $@$ (the second $@$). That is
+    \begin{equation}
+        (q_{so}, x_1\underline{a_1}y_1, \#s\#@r\underline{@}) \vdash_T^* (q_{st}^{\prime\prime}, x_2\underline{a_2}y_2, \#s\#@r\underline{@})
+    \end{equation}
+    \item Finally, delete all characters on the second paper strip and wait for the next $OB$ operation.
+    \begin{equation}
+        (q_{st}^{\prime\prime}, x_2\underline{a_2}y_2, \#s\#@r\underline{@}) \vdash_T^* (q_{st}^{\prime\prime\prime}, x_2\underline{a_2}y_2, \underline{\Delta})
+    \end{equation}
+
+\end{enumerate}
+\end{proof}
+
+\subsection{The Practical Value of Degradation Proofs}
+The degradation proof of a sensory Turing machine states that we can implement a system that can simulate a sensory Turing machine with a generic Turing machine and certain artifacts (or artificial intelligence) under certain constraints. This theory is also the essence of CTL.
